@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('user/manager/rekappemasaran', [Rekappemasaran::class, 'index'])->middleware('userAkses:manager');
     Route::post('user/manager/tambahNota', [Rekappemasaran::class, 'tambahNota'])->middleware('userAkses:manager');
     Route::post('user/manager/editNota/{id}', [Rekappemasaran::class, 'editNota'])->middleware('userAkses:manager');
+    Route::get('deletenota/{id}', [Rekappemasaran::class, 'deleteNota'])->middleware('userAkses:manager');
 
 
     //semua terkait owner taruh sini

@@ -127,8 +127,8 @@
                             {{-- <label for="startDate" class="form-label">Mulai:</label> --}}
                             <input type="date" class="form-control" id="startDate" name="startDate" value="{{ $startDate ?? '' }}" placeholder="mulai">
                         </div>
-                        <div class="col-sm-1">
-                            <p>s/d : </p>
+                        <div class="col-sm-1 text-center">
+                            <p>s/d</p>
                         </div>
                         <div class="col-sm">
                             {{-- <label for="endDate" class="form-label">Selesai:</label> --}}
@@ -175,18 +175,24 @@
                                 </tr>
                              </thead>
                              <tbody>
+                                @php
+                                    $totalQtycash = 0; // Inisialisasi total qty di luar loop
+                                @endphp
                                 @foreach ($notacash as $index => $item)
                                     <tr>
                                         <td>{{ $index + 1  }}</td>
                                         <td>{{ $item->nama_toko  }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->tanggal)->format('d F Y')  }}</td>
-                                        <td>{{ $item->qty  }}</td>
+                                        <td>{{ $item->qty }}</td>
                                         <td>{{ $item->nama_barang  }}</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editnotacash-{{ $item->id }}">Edit</button>
-                                            <a href="deletenota/{{ $item->id }}" class="btn btn-danger btn-sm">Hapus</a>
+                                            <a href="/deletenota/{{ $item->id }}" class="btn btn-danger btn-sm">Hapus</a>
                                         </td>
                                     </tr>
+                                    @php
+                                        $totalQtycash += $item->qty; // Menambahkan qty pada setiap iterasi ke totalQty
+                                    @endphp
                                     <div class="modal fade" id="editnotacash-{{ $item->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -243,7 +249,12 @@
                                                 </div>
                                         </div>
                                     </div>
-                                @endforeach
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td><b>Total</b></td>
+                                        <td>{{ $totalQtycash }}</td>
+                                    </tr>
                              </tbody>
                         </table>
                     </div>
@@ -262,6 +273,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $totalQtynoncash = 0; // Inisialisasi total qty di luar loop
+                                @endphp
                                 @foreach ($notanoncash as $index => $item)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
@@ -274,6 +288,9 @@
                                             <a href="deletenota/{{ $item->id }}" class="btn btn-danger btn-sm">Hapus</a>
                                         </td>
                                     </tr>
+                                    @php
+                                        $totalQtynoncash += $item->qty;
+                                    @endphp
                                     <div class="modal fade" id="editnotanoncash-{{ $item->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -331,6 +348,11 @@
                                         </div>
                                     </div>
                                 @endforeach
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td><b>Total</b></td>
+                                    <td>{{ $totalQtynoncash }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

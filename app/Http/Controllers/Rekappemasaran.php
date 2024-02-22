@@ -57,4 +57,10 @@ class Rekappemasaran extends Controller
 
         return redirect('user/manager/rekappemasaran')->with('success', 'nota berhasil diedit');
     }
+
+    public function deleteNota($id){
+        $data = nota_pemasaran::find($id);
+        $data->delete();
+        return redirect('user/manager/rekappemasaran')->with('success', 'nota berhasil dihapus');
+    }
 }
