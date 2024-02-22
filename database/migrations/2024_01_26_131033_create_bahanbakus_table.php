@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('bahanbakus', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_bahan_baku');
-            $table->
+            $table->string('nama_bahan');
+            $table->enum('jenis', ['bahan baku', 'bahan penolong', 'kardus']);
+            $table->string('satuan');
+            $table->integer('banyak_satuan')->nullable();
+            $table->enum('jenis_satuan', ['Kg', 'Gr', 'Biji'])->nullable();
+            $table->integer('harga_persatuan');
+            $table->integer('harga_perkilo')->nullable();
             $table->timestamps();
         });
     }

@@ -90,7 +90,7 @@ main {
 
 .scrollable-div {
     width: 300px;
-    height: auto; /* Sesuaikan tinggi sesuai kebutuhan */
+    height: 100vh; /* Sesuaikan tinggi sesuai kebutuhan */
     overflow: auto; /* Atau gunakan overflow: scroll; */
     align-items: center;
     justify-content: center;

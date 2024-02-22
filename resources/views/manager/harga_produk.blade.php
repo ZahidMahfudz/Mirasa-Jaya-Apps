@@ -25,7 +25,7 @@
                     <td>{{ number_format($item->harga_satuan) }}</td>
                     <td>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editProduk-{{ $item->id }}">Edit</button>
-                        <button class="btn btn-danger">Hapus</button>
+                        <a href="/delete/{{ $item->id }}" class="btn btn-danger">Hapus</a>
                     </td>
                 </tr>
 

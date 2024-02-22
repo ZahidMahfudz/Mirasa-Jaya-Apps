@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $data = produk::all();
@@ -37,54 +34,29 @@ class ProdukController extends Controller
     }
 
     public function edit(Request $request, $id){
+        // Validasi input menggunakan fungsi validate()
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'harga_satuan' => 'required|numeric|min:0',
+        ]);
 
+        // Temukan produk berdasarkan ID
+        $produk = produk::findOrFail($id);
+
+        // Update data produk
+        $produk->update([
+            'nama_produk' => $request->input('nama_produk'),
+            'harga_satuan' => $request->input('harga_satuan'),
+        ]);
+
+        // Redirect atau kembalikan respons sesuai kebutuhan
+        return redirect('user/manager/harga_produk')->with('success', 'Produk berhasil diupdate.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function delete($id){
+        $data = produk::find($id);
+        $data->delete();
+        return redirect('user/manager/harga_produk')->with('success', 'Produk berhasil diupdate.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreprodukRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(produk $produk)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(produk $produk)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateprodukRequest $request, produk $produk)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(produk $produk)
-    {
-        //
-    }
 }

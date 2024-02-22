@@ -8,8 +8,14 @@
     <meta name="generator" content="Hugo 0.84.0">
     <title>Mirasa Jaya - Dashboard</title>
 
-    <!-- Load Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+   <!-- Bootstrap CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+   <!-- Bootstrap JavaScript (Popper.js included) -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Load Bootstrap CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
     <!-- Bootstrap core CSS -->
     <style>
@@ -41,7 +47,7 @@
         </p>
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
-                <a href="owner/dasboard" class="btn btn-toggle" aria-expanded="true">
+                <a href="dasboard" class="btn btn-toggle" aria-expanded="true">
                     Dashboard
                 </a>
             </li>
@@ -51,10 +57,10 @@
                 </a>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#rugilaba" aria-expanded="true">
                     Rugi Laba
                 </button>
-                <div class="collapse show" id="home-collapse">
+                <div class="collapse" id="rugilaba">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Neraca Saldo</a></li>
                         <li><a href="#" class="link-dark rounded">Laporan Rugi Laba</a></li>
@@ -62,20 +68,20 @@
                 </div>
             </li>
             <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
+                <a href="/user/owner/uangmasuk" class="btn btn-toggle" aria-expanded="true">
                     Uang Masuk
                 </a>
             </li>
             <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
+                <a href="/user/owner/piutang" class="btn btn-toggle" aria-expanded="true">
                     Piutang Usaha
                 </a>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#kas" aria-expanded="true">
                     Kas
                 </button>
-                <div class="collapse show" id="home-collapse">
+                <div class="collapse" id="kas">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Kas (Liquid)</a></li>
                         <li><a href="#" class="link-dark rounded">Kas Rekening Bank</a></li>
@@ -107,15 +113,15 @@
                 </a>
             </li>
             <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
+                <a href="hutangbahanbaku" class="btn btn-toggle" aria-expanded="true">
                     Hutang Bahan Baku
                 </a>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#stok" aria-expanded="true">
                     Stok
                 </button>
-                <div class="collapse show" id="home-collapse">
+                <div class="collapse" id="stok">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Stok Bahan Baku dan Kardus</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Bahan Penolong</a></li>
@@ -124,20 +130,20 @@
                 </div>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#laporanpemasaran" aria-expanded="true">
                     Laporan Pemasaran
                 </button>
-                <div class="collapse show" id="home-collapse">
+                <div class="collapse" id="laporanpemasaran">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Penjualan</a></li>
                         <li><a href="#" class="link-dark rounded">Nota Penjualan</a></li>
                 </div>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#bebanusaha" aria-expanded="true">
                     Beban Usaha
                 </button>
-                <div class="collapse show" id="home-collapse">
+                <div class="collapse" id="bebanusaha">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Pembelian Bahan Baku</a></li>
                         <li><a href="#" class="link-dark rounded">Akomodasi Produksi</a></li>
@@ -165,7 +171,7 @@
                 <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
                     Account
                 </button>
-                <div class="collapse show" id="account-collapse">
+                <div class="collapse" id="account-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Profile</a></li>
                         <li><a href="/logout" class="link-dark rounded">Sign out</a></li>
@@ -174,7 +180,7 @@
             </li>
         </ul>
     </div>
-    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 79%;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light scrollable" style="width: 80%; overflow-y: auto;">
         @yield('main_content')
     </div>
 </main>

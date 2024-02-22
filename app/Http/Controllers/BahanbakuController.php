@@ -3,64 +3,131 @@
 namespace App\Http\Controllers;
 
 use App\Models\bahanbaku;
-use App\Http\Requests\StorebahanbakuRequest;
-use App\Http\Requests\UpdatebahanbakuRequest;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class BahanbakuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('manager.bahanbaku');
+        // $bahanbaku = Bahanbaku::all();
+        $bahanbaku = bahanbaku::where('jenis', 'bahan baku')->get();
+        $bahanpenolong = bahanbaku::where('jenis', 'bahan penolong')->get();
+        $kardus = bahanbaku::where('jenis', 'kardus')->get();
+        return view('manager.bahanbaku', compact('bahanbaku', 'bahanpenolong', 'kardus'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function delete($id){
+        $data = bahanbaku::find($id);
+        $data->delete();
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil dihapus');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorebahanbakuRequest $request)
-    {
-        //
+    public function tambahbahanbaku(Request $request){
+        // Validasi form
+        $request->validate([
+            'nama_bahan_baku' => 'required|string|max:255',
+            'satuan' => 'required|string|max:255',
+            'harga_persatuan' => 'required|numeric|min:0',
+        ]);
+
+        // Mendapatkan nilai input dari formulir
+        $harga_persatuan = $request->input('harga_persatuan');
+        $banyaknya_satuan = $request->input('banyaknya_satuan');
+
+        // Hitung harga per kilo
+        $hargaperkilo = $harga_persatuan / $banyaknya_satuan;
+
+        $simpan = bahanbaku::create([
+            'nama_bahan'=>$request->input('nama_bahan_baku'),
+            'jenis'=>'bahan baku',
+            'satuan'=>$request->input('satuan'),
+            'banyak_satuan'=>$request->input('banyaknya_satuan'),
+            'jenis_satuan'=>$request->input('jenis_satuan'),
+            'harga_persatuan'=>$request->input('harga_persatuan'),
+            'harga_perkilo'=>$hargaperkilo
+        ]);
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(bahanbaku $bahanbaku)
-    {
-        //
+    public function tambahbahanpenolong(Request $request){
+        $request->validate([
+            'nama_bahan_penolong' => 'required|string|max:255',
+            'satuan' => 'required|string|max:255',
+            'harga_persatuan' => 'required|numeric|min:0',
+        ]);
+
+        // Mendapatkan nilai input dari formulir
+        $harga_persatuan = $request->input('harga_persatuan');
+        $banyaknya_satuan = $request->input('banyaknya_satuan');
+
+        // Hitung harga per kilo
+        $hargaperkilo = $harga_persatuan / $banyaknya_satuan;
+
+        $simpan = bahanbaku::create([
+            'nama_bahan'=>$request->input('nama_bahan_penolong'),
+            'jenis'=>'bahan penolong',
+            'satuan'=>$request->input('satuan'),
+            'banyak_satuan'=>$request->input('banyaknya_satuan'),
+            'jenis_satuan'=>$request->input('jenis_satuan'),
+            'harga_persatuan'=>$request->input('harga_persatuan'),
+            'harga_perkilo'=>$hargaperkilo
+        ]);
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(bahanbaku $bahanbaku)
-    {
-        //
+    public function tambahkardus(Request $request){
+        $request->validate([
+            'nama_kardus'=>'required|string|max:255',
+            'harga_persatuan' => 'required|numeric|min:0'
+        ]);
+        $simpan = bahanbaku::create([
+            'nama_bahan'=>$request->input('nama_kardus'),
+            'jenis'=>'kardus',
+            'satuan'=>$request->input('satuan'),
+            'harga_persatuan'=>$request->input('harga_persatuan'),
+        ]);
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatebahanbakuRequest $request, bahanbaku $bahanbaku)
-    {
-        //
+    public function editbahanbaku(Request $request, $id){
+        $request->validate([
+            'satuan' => 'required',
+            'banyaknya_satuan' => 'required|numeric|min:1',
+            'jenis_satuan' => ['required', Rule::in(['Kg', 'Gr', 'Biji'])],
+            'harga_persatuan' => 'required|numeric|min:0',
+        ]);
+
+        $bahanbaku = bahanbaku::find($id);
+
+        $hargaperkilo = $request->input('harga_persatuan') / $request->input('banyaknya_satuan');
+
+        $bahanbaku->update([
+            "satuan"=>$request->input('satuan'),
+            "banyak_satuan"=>$request->input('banyaknya_satuan'),
+            "jenis_satuan"=>$request->input('jenis_satuan'),
+            "harga_persatuan"=>$request->input('harga_persatuan'),
+            "harga_perkilo"=>$hargaperkilo
+        ]);
+
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil diedit');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(bahanbaku $bahanbaku)
-    {
-        //
+    public function editkardus(Request $request, $id){
+        $request->validate([
+            'satuan' => 'required',
+            'harga_persatuan' => 'required|numeric|min:0',
+        ]);
+
+        $kardus = bahanbaku::find($id);
+
+        $kardus->update([
+            'satuan'=>$request->input('satuan'),
+            'harga_persatuan'=>$request->input('harga_persatuan')
+        ]);
+
+        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil diedit');
     }
+
 }
