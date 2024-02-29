@@ -157,8 +157,31 @@
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="laporan_penjualan" role="tabpanel" aria-labelledby="laporan_penjualan-tab">
-                    <div>
-                        <p>tab rekapitulasi penjualan</p>
+                    <div class="mt-2">
+                        <table class="table table-bordered table-striped table-sm border border-dark align-middle">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">No</th>
+                                    <th rowspan="2">Nama Produk</th>
+                                    <th colspan="{{ count($dropout) }}">DO</th>
+                                    <th rowspan="2">Jumlah</th>
+                                    <th rowspan="2">Nota Cash</th>
+                                    <th rowspan="2">Nota Non Cash</th>
+                                    <th>SSS</th>
+                                </tr>
+                                <tr>
+                                    // tampilkan data yang sudah di fetch dalam fungsi sesuai rujukan
+                                    @foreach ($dropout as $do)
+                                        <th>Tanggal DO</th>
+                                    @endforeach
+                                    <th>Tanggal SSS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nota_cash" role="tabpanel" aria-labelledby="nota_cash-tab">
@@ -251,8 +274,8 @@
                                     </div>
                                     @endforeach
                                     <tr>
-                                        <td colspan="2"></td>
-                                        <td><b>Total</b></td>
+                                        <td colspan="3"><b>Total</b></td>
+                                        {{-- <td></td> --}}
                                         <td>{{ $totalQtycash }}</td>
                                     </tr>
                              </tbody>
@@ -349,8 +372,8 @@
                                     </div>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2"></td>
-                                    <td><b>Total</b></td>
+                                    <td colspan="3"><b>Total</b></td>
+                                    {{-- <td></td> --}}
                                     <td>{{ $totalQtynoncash }}</td>
                                 </tr>
                             </tbody>

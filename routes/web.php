@@ -7,10 +7,12 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PiutangController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\Rekappemasaran;
+use App\Http\Controllers\ResumeProduksiController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\UangmasukController;
 use App\Http\Controllers\UserController;
 use App\Models\hutangbahanbaku;
+use App\Policies\ResumeProduksiPolicy;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,6 +78,10 @@ Route::middleware(['auth'])->group(function(){
     Route::post('user/manager/tambahNota', [Rekappemasaran::class, 'tambahNota'])->middleware('userAkses:manager');
     Route::post('user/manager/editNota/{id}', [Rekappemasaran::class, 'editNota'])->middleware('userAkses:manager');
     Route::get('deletenota/{id}', [Rekappemasaran::class, 'deleteNota'])->middleware('userAkses:manager');
+    //Resume Produksi
+    Route::get('user/manager/resumeproduksi', [ResumeProduksiController::class, 'index'])->middleware('userAkses:manager');
+    Route::post('user/manager/tambahResume', [ResumeProduksiController::class, 'tambahResume'])->middleware('userAkses:manager');
+    Route::get('/getInOutData', [ResumeProduksiController::class, 'getInOutData']);
 
 
     //semua terkait owner taruh sini
@@ -90,5 +96,7 @@ Route::middleware(['auth'])->group(function(){
     //piutang
     Route::get('/user/owner/piutang', [PiutangController::class, 'indexowner'])->middleware('userAkses:owner');
     Route::get('user/owner/cetakpiutang', [PiutangController::class, 'cetakpiutang'])->middleware('userAkses:owner');
+    //rekapitulasi Penjualan
+    Route::get('user/owner/rekapitulasipenjualan', [Rekappemasaran::class, 'indexowner'])->middleware('userAkses:owner');
 
 });

@@ -57,12 +57,11 @@
                 </button>
                 <div class="collapse" id="produksi">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Resume Produksi</a></li>
+                        <li><a href="/user/manager/resumeproduksi" class="link-dark rounded">Resume Produksi</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Bahan Baku dan kardus</a></li>
                         <li><a href="#" class="link-dark rounded">Work In Progress (WIP)</a></li>
                         <li><a href="/user/manager/harga_bahan_baku" class="link-dark rounded">Harga Bahan Baku</a></li>
                         <li><a href="/user/manager/harga_produk" class="link-dark rounded">Harga Produk</a></li>
-                        <li><a href="#" class="link-dark rounded">Aset Mesin dan Peralatan Produksi</a></li>
                     </ul>
                 </div>
             </li>
@@ -86,6 +85,7 @@
                         <li><a href="/user/manager/piutang" class="link-dark rounded">Piutang Usaha</a></li>
                         <li><a href="/user/manager/uang_masuk" class="link-dark rounded">Uang Masuk</a></li>
                         <li><a href="/user/manager/hutang_bahan_baku" class="link-dark rounded">Hutang Bahan Baku</a></li>
+                        <li><a href="#" class="link-dark rounded">Aset Mesin dan Peralatan Produksi</a></li>
                     </ul>
                 </div>
             </li>

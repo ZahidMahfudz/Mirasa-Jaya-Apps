@@ -5,9 +5,13 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\bahanbaku;
+use App\Models\drop_out;
 use App\Models\hutangbahanbaku;
+use App\Models\nota_pemasaran;
 use App\Models\piutang;
 use App\Models\produk;
+use App\Models\resume_produksi;
+use App\Models\sss;
 use App\Models\total_hutang_bahan_baku;
 use App\Models\total_uang_masuk;
 use App\Models\uangmasukpiutang;
@@ -16,6 +20,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -188,37 +193,27 @@ class DatabaseSeeder extends Seeder
             total_hutang_bahan_baku::create($val);
         };
 
-        $totaluangmasuk = [
-            [
-                'total_uang_masuk'=>32015749,
-                'update'=>now(),
-            ]
-        ];
-        foreach($totaluangmasuk as $key => $val){
-            total_uang_masuk::create($val);
-        };
-
         $uangmasukpiutang = [
             [
                 'tanggal' => now()->subDays(rand(1, 10)), // Tanggal acak 1 hingga 10 hari yang lalu
                 'tanggal_lunas' => null,
                 'nama_toko' => 'Bu Hj. Ragil Ngablak',
                 'keterangan' => 'Cash',
-                'total_piutang' => rand(3000000, 10000000), // Total piutang acak antara 3 juta hingga 10 juta
+                'total_piutang' => 4598847, // Total piutang acak antara 3 juta hingga 10 juta
             ],
             [
                 'tanggal' => now(),
                 'tanggal_lunas' => now()->subDays(rand(1, 10)), // Tanggal acak 1 hingga 10 hari yang lalu
                 'nama_toko' => 'Bu Hj. Ragil Ngablak',
                 'keterangan' => 'piutang',
-                'total_piutang' => rand(3000000, 10000000),
+                'total_piutang' => 9055776,
             ],
             [
                 'tanggal' => now(),
                 'tanggal_lunas' => now()->subDays(rand(1, 10)), // Tanggal acak 1 hingga 10 hari yang lalu
                 'nama_toko' => 'Bu Hj. Ragil Ngablak',
                 'keterangan' => 'titp',
-                'total_piutang' => rand(3000000, 10000000),
+                'total_piutang' => 4893165,
             ],
 
         ];
@@ -274,6 +269,16 @@ class DatabaseSeeder extends Seeder
             uangmasukretail::create($val);
         }
 
+        $totaluangmasuk = [
+            [
+                'total_uang_masuk'=>24677288,
+                'update'=>now(),
+            ]
+        ];
+        foreach($totaluangmasuk as $key => $val){
+            total_uang_masuk::create($val);
+        };
+
         $jumlah_data = 5; // Jumlah data piutang yang diinginkan
         $piutang = [];
 
@@ -307,64 +312,370 @@ class DatabaseSeeder extends Seeder
         ]);
 
         //nota_pemasaran
-
-        $startDate = Carbon::create(2024, 2, 11);
-        $endDate = Carbon::create(2024, 2, 18);
-
-        for ($i = 0; $i < 8; $i++) {
-            $randomDate = $startDate->copy()->addDays($i)->toDateString();
-            // Generate random quantity between 1 to 10
-            $qty = rand(1, 10);
-            // Get random product
-            $randomProduct = $produk[array_rand($produk)];
-            // Generate random store name
-            $storeName = 'Toko ' . ($i + 1);
-            // Insert into database
-            DB::table('nota_pemasarans')->insert([
-                'jenis_nota' => rand(0, 1) ? 'nota_cash' : 'nota_noncash',
-                'tanggal' => $randomDate,
-                'nama_toko' => $storeName,
-                'qty' => $qty,
-                'nama_barang' => $randomProduct['nama_produk'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
+        $nota_pemasaran = [
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-27',
+                'nama_toko'=>'Bu Hj, Ragil, Ngablak',
+                'qty'=>50,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-28',
+                'nama_toko'=>'Bp. Tanto',
+                'qty'=>25,
+                'nama_barang' => 'Bagelen Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-28',
+                'nama_toko'=>'Bu Hj Kartika, Kebumen',
+                'qty'=>70,
+                'nama_barang' => 'Bagelen Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-28',
+                'nama_toko'=>'Mb. Siwi, Ps Muntilan',
+                'qty'=>30,
+                'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-29',
+                'nama_toko'=>'Mb. Siwi, Ps Muntilan',
+                'qty'=>30,
+                'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_cash',
+                'tanggal'=>'2024-02-29',
+                'nama_toko'=>'Eco Roso, Magelang',
+                'qty'=>45,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-26',
+                'nama_toko'=>'Eco Roso, Magelang',
+                'qty'=>15,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-26',
+                'nama_toko'=>'Seruni, Magelang',
+                'qty'=>25,
+                'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-27',
+                'nama_toko'=>'Mb In, Magelang',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-27',
+                'nama_toko'=>'Mb Siti, Magelang',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-28',
+                'nama_toko'=>'Niki Mantep, Salatiga',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-28',
+                'nama_toko'=>'Bu Lastry, Ambarawa',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen Sisir 2 Kg'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-29',
+                'nama_toko'=>'Mb. Azizah, Kebumen',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+            [
+                'jenis_nota'=>'nota_noncash',
+                'tanggal'=>'2024-02-29',
+                'nama_toko'=>'Mb. Siti, Magelang',
+                'qty'=>35,
+                'nama_barang' => 'Bagelen 2 KG'
+            ],
+        ];
+        foreach ($nota_pemasaran as $key => $val) {
+            nota_pemasaran::create($val);
+        };
 
         //drop_out
-
-        for ($i = 0; $i < 8; $i++) {
-            $randomDate = $startDate->copy()->addDays($i)->toDateString();
-            // Get random product
-            $randomProduct = $produk[array_rand($produk)];
-            // Generate random quantity between 1 to 100
-            $quantity = rand(1, 100);
-            // Insert into database
-            DB::table('drop_outs')->insert([
-                'tanggal_do' => $randomDate,
-                'nama_produk' => $randomProduct['nama_produk'],
-                'jumlah' => $quantity,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
+        $dropout = [
+            [
+                'tanggal_do'=>'2024-02-26',
+                'nama_produk'=>'Bagelen 2 KG',
+                'jumlah'=>50,
+            ],
+            [
+                'tanggal_do'=>'2024-02-26',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'jumlah'=>45,
+            ],
+            [
+                'tanggal_do'=>'2024-02-26',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'jumlah'=>60,
+            ],
+            [
+                'tanggal_do'=>'2024-02-27',
+                'nama_produk'=>'Bagelen 2 KG',
+                'jumlah'=>75,
+            ],
+            [
+                'tanggal_do'=>'2024-02-27',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'jumlah'=>70,
+            ],
+            [
+                'tanggal_do'=>'2024-02-27',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'jumlah'=>55,
+            ],
+            [
+                'tanggal_do'=>'2024-02-28',
+                'nama_produk'=>'Bagelen 2 KG',
+                'jumlah'=>80,
+            ],
+            [
+                'tanggal_do'=>'2024-02-28',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'jumlah'=>95,
+            ],
+            [
+                'tanggal_do'=>'2024-02-28',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'jumlah'=>115,
+            ],
+            [
+                'tanggal_do'=>'2024-02-29',
+                'nama_produk'=>'Bagelen 2 KG',
+                'jumlah'=>5,
+            ],
+            [
+                'tanggal_do'=>'2024-02-29',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'jumlah'=>10,
+            ],
+            [
+                'tanggal_do'=>'2024-02-29',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'jumlah'=>20,
+            ],
+        ];
+        foreach ($dropout as $key => $val) {
+            drop_out::create($val);
+        };
 
         //sss
+        $sss = [
+            [
+                'tanggal'=>'2024-02-25',
+                'nama_produk'=>'Bagelen 2 KG',
+                'sss'=>500,
+            ],
+            [
+                'tanggal'=>'2024-02-25',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'sss'=>500,
+            ],
+            [
+                'tanggal'=>'2024-02-25',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'sss'=>500,
+            ],
+            [
+                'tanggal'=>'2024-02-26',
+                'nama_produk'=>'Bagelen 2 KG',
+                'sss'=>535,
+            ],
+            [
+                'tanggal'=>'2024-02-26',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'sss'=>545,
+            ],
+            [
+                'tanggal'=>'2024-02-26',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'sss'=>535,
+            ],
+            [
+                'tanggal'=>'2024-02-27',
+                'nama_produk'=>'Bagelen 2 KG',
+                'sss'=>525,
+            ],
+            [
+                'tanggal'=>'2024-02-27',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'sss'=>580,
+            ],
+            [
+                'tanggal'=>'2024-02-27',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'sss'=>590,
+            ],
+            [
+                'tanggal'=>'2024-02-28',
+                'nama_produk'=>'Bagelen 2 KG',
+                'sss'=>605,
+            ],
+            [
+                'tanggal'=>'2024-02-28',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'sss'=>545,
+            ],
+            [
+                'tanggal'=>'2024-02-28',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'sss'=>640,
+            ],
+            [
+                'tanggal'=>'2024-02-29',
+                'nama_produk'=>'Bagelen 2 KG',
+                'sss'=>495,
+            ],
+            [
+                'tanggal'=>'2024-02-29',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
+                'sss'=>555,
+            ],
+            [
+                'tanggal'=>'2024-02-29',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
+                'sss'=>630,
+            ],
+        ];
+        foreach ($sss as $key => $val) {
+            sss::create($val);
+        };
 
-        for ($i = 0; $i < 8; $i++) {
-            $randomDate = $startDate->copy()->addDays($i)->toDateString();
-            // Get random product
-            $randomProduct = $produk[array_rand($produk)];
-            // Generate random SSS value between 1000 to 10000
-            $sss = rand(1000, 10000);
-            // Insert into database
-            DB::table('ssses')->insert([
-                'tanggal' => $randomDate,
-                'nama_produk' => $randomProduct['nama_produk'],
-                'sss' => $sss,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+        //resume produksi
+        $resume_produksi = [
+            [
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 10,
+                'out' => 10,
+                'sisa' => 100,
+            ],
+            [
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 10,
+                'out' => 10,
+                'sisa' => 100,
+            ],
+            [
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 10,
+                'out' => 10,
+                'sisa' => 100,
+            ],
+            [
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 5,
+                'out' => 15,
+                'sisa' => 90,
+            ],
+            [
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 25,
+                'out' => 10,
+                'sisa' => 115,
+            ],
+            [
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 30,
+                'out' => 15,
+                'sisa' => 115,
+            ],
+            [
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 30,
+                'out' => 15,
+                'sisa' => 105,
+            ],
+            [
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 25,
+                'out' => 35,
+                'sisa' => 105,
+            ],
+            [
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 25,
+                'out' => 35,
+                'sisa' => 105,
+            ],
+            [
+                'tanggal' => '2024-02-04',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 20,
+                'out' => 10,
+                'sisa' => 115,
+            ],
+            [
+                'tanggal' => '2024-02-04',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 15,
+                'out' => 25,
+                'sisa' => 95,
+            ],
+            [
+                'tanggal' => '2024-02-04',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 30,
+                'out' => 20,
+                'sisa' => 120,
+            ],
+            [
+                'tanggal' => '2024-02-05',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 25,
+                'out' => 15,
+                'sisa' => 125,
+            ],
+            [
+                'tanggal' => '2024-02-05',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 20,
+                'out' => 20,
+                'sisa' => 95,
+            ],
+            [
+                'tanggal' => '2024-02-05',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 15,
+                'out' => 25,
+                'sisa' => 110,
+            ],
+        ];
+
+        foreach ($resume_produksi as $key => $val) {
+            resume_produksi::create($val);
         }
     }
 }

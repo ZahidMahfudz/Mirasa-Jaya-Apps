@@ -52,77 +52,37 @@
                 </a>
             </li>
             <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Neraca
-                </a>
-            </li>
-            <li class="mb-1">
                 <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#rugilaba" aria-expanded="true">
-                    Rugi Laba
+                    Neraca dan Rugi Laba
                 </button>
                 <div class="collapse" id="rugilaba">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Neraca Saldo</a></li>
+                        <li><a href="#" class="link-dark rounded">Neraca</a></li>
                         <li><a href="#" class="link-dark rounded">Laporan Rugi Laba</a></li>
-                        <li><a href="#" class="link-dark rounded">Laporan Perubahan Modal</a></li>
                 </div>
             </li>
             <li class="mb-1">
-                <a href="/user/owner/uangmasuk" class="btn btn-toggle" aria-expanded="true">
-                    Uang Masuk
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="/user/owner/piutang" class="btn btn-toggle" aria-expanded="true">
-                    Piutang Usaha
-                </a>
-            </li>
-            <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#kas" aria-expanded="true">
-                    Kas
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#keuangan" aria-expanded="true">
+                    Keuangan
                 </button>
-                <div class="collapse" id="kas">
+                <div class="collapse" id="keuangan">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Kas (Liquid)</a></li>
-                        <li><a href="#" class="link-dark rounded">Kas Rekening Bank</a></li>
+                        <li><a href="#" class="link-dark rounded">Modal</a></li>
+                        <li><a href="#" class="link-dark rounded">Kas</a></li>
+                        <li><a href="/user/owner/uangmasuk" class="link-dark rounded">Uang Masuk</a></li>
+                        <li><a href="/user/owner/piutang" class="link-dark rounded">Piutang</a></li>
+                        <li><a href="#" class="link-dark rounded">Aset Mesin dan Peralatan</a></li>
+                        <li><a href="/user/owner/hutangbahanbaku" class="link-dark rounded">Hutang Bahan Baku</a></li>
                 </div>
-            </li>
-            <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Modal
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Aset Mesin dan Peralatan
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Laporan Produksi
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Stok Roti Jadi
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="#" class="btn btn-toggle" aria-expanded="true">
-                    Laporan Produksi
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="hutangbahanbaku" class="btn btn-toggle" aria-expanded="true">
-                    Hutang Bahan Baku
-                </a>
             </li>
             <li class="mb-1">
                 <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#stok" aria-expanded="true">
-                    Stok
+                    Produksi
                 </button>
                 <div class="collapse" id="stok">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">Laporan Produksi</a></li>
+                        <li><a href="#" class="link-dark rounded">Stok Roti Jadi</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Bahan Baku dan Kardus</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Bahan Penolong</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Kardus</a></li>
@@ -133,10 +93,10 @@
                 <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#laporanpemasaran" aria-expanded="true">
                     Laporan Pemasaran
                 </button>
-                <div class="collapse" id="laporanpemasaran">
+                <div class="collapse {{ request()->is('user/owner/rekapitulasipenjualan') ? 'show' : '' }}" id="laporanpemasaran">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Penjualan</a></li>
-                        <li><a href="#" class="link-dark rounded">Nota Penjualan</a></li>
+                        <li><a href="/user/owner/rekapitulasipenjualan" class="link-dark rounded" >Rekapitulasi Pemasaran</a></li>
+                    </ul>
                 </div>
             </li>
             <li class="mb-1">
@@ -185,28 +145,3 @@
     </div>
 </main>
 
-
-{{-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-dpVz0Ia5PaE5HJvXR5eF5nGQs54N98YRYJvsVp/6zpEMxVxd93QT3LGAVFDaPWA" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-eNpEnSVu+AFtCUGOIIJ8l7luPeHEGTsxmKfDQVwSPWXb+1BDkGNqQ8t5b9N2b8Kn" crossorigin="anonymous"></script>
-
-<!-- Your custom script for initializing Bootstrap components -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Select all elements with data-bs-toggle="collapse"
-        var collapseTriggerList = document.querySelectorAll('[data-bs-toggle="collapse"]');
-
-        // Iterate over each collapse element
-        collapseTriggerList.forEach(function (collapseTrigger) {
-            // Add a click event listener to toggle the collapse
-            collapseTrigger.addEventListener('click', function () {
-                var targetId = this.getAttribute('data-bs-target'); // Get the target ID from data-bs-target attribute
-                var targetElement = document.querySelector(targetId); // Find the target element
-
-                // Toggle the collapse on the target element
-                var bsCollapse = new bootstrap.Collapse(targetElement);
-                bsCollapse.toggle();
-            });
-        });
-    });
-</script> --}}

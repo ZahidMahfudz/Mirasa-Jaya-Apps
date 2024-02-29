@@ -2,18 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\drop_out;
 use App\Models\nota_pemasaran;
 use App\Models\produk;
+use App\Models\sss;
 use Illuminate\Http\Request;
 
 class Rekappemasaran extends Controller
 {
+    //tolong carikan kueri yang memunculkan data sss dan data do, serta sum untuk nota cash dan nota noncash untuk setiap produk kemudian compact sesuai rujukan
     public function index(){
         $produk = produk::all();
         $produks = produk::all();
         $notacash = nota_pemasaran::where('jenis_nota', 'nota_cash')->get();
         $notanoncash = nota_pemasaran::where('jenis_nota', 'nota_noncash')->get();
-        return view('manager.rekappemasaran', compact('produk', 'produks', 'notacash', 'notanoncash'));
+        $sss = sss::orderBy('tanggal', 'desc')->get();
+        $countnotacashperproduct = nota_pemasaran::where('jenis_nota', 'nota_cash')
+                    ->groupBy('nama_barang')
+                    ->selectRaw('nama_barang, sum(nama_barang) as totalnotacashperproduct')
+                    ->get();
+
+        $countnotanoncashperproduct = nota_pemasaran::where('jenis_nota', 'nota_noncash')
+                    ->groupBy('nama_barang')
+                    ->selectRaw('nama_barang, sum(nama_barang) as totalnotanoncashperproduct')
+                    ->get();
+        $dropout = drop_out::orderBy('tanggal_do', 'desc')->get();
+
+        return view('manager.rekappemasaran', compact('produk', 'produks', 'notacash', 'notanoncash', 'sss', 'countnotacashperproduct', 'countnotanoncashperproduct', 'dropout'));
     }
 
     public function tambahNota(Request  $request){
@@ -62,5 +77,11 @@ class Rekappemasaran extends Controller
         $data = nota_pemasaran::find($id);
         $data->delete();
         return redirect('user/manager/rekappemasaran')->with('success', 'nota berhasil dihapus');
+    }
+
+    public function indexowner(){
+        $notacash = nota_pemasaran::where('jenis_nota', 'nota_cash')->get();
+        $notanoncash = nota_pemasaran::where('jenis_nota', 'nota_noncash')->get();
+        return view('owner.rekappemasaran', compact('notacash', 'notanoncash'));
     }
 }
