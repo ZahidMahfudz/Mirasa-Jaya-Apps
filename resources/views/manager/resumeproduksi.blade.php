@@ -61,6 +61,7 @@
         </div>
     </div>
 
+    //buatlah ajax untuk form dibawah, ambil data yang benar berdasarkan tanggal dan nama produk yang dipilih
     <div class="modal fade" id="editResume" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -87,6 +88,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            //tampilkan in sesuai dengan tanggal dan nama produk yang dipilih
                             <div class="mt-2">
                                 <label for="in" class="form-label">IN:</label>
                                 <input type="number" name="in" id="in" class="form-control  @error('in') is-invalid @enderror" value="{{ old('in') }}" required>
@@ -94,6 +96,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            //tampilkan OUT sesuai dengan tanggal dan nama produk yang dipilih
                             <div class="mt-2">
                                 <label for="OUT" class="form-label">OUT:</label>
                                 <input type="number" name="OUT" id="OUT" class="form-control  @error('OUT') is-OUTvalid @enderror" value="{{ old('OUT') }}" required>

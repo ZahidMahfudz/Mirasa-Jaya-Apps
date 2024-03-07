@@ -59,7 +59,7 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="/user/manager/resumeproduksi" class="link-dark rounded">Resume Produksi</a></li>
                         <li><a href="#" class="link-dark rounded">Stok Bahan Baku dan kardus</a></li>
-                        <li><a href="#" class="link-dark rounded">Work In Progress (WIP)</a></li>
+                        <li><a href="/user/manager/wip" class="link-dark rounded">Work In Progress (WIP)</a></li>
                         <li><a href="/user/manager/harga_bahan_baku" class="link-dark rounded">Harga Bahan Baku</a></li>
                         <li><a href="/user/manager/harga_produk" class="link-dark rounded">Harga Produk</a></li>
                     </ul>

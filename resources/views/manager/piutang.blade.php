@@ -43,7 +43,7 @@
                             <td>{{ $item->Keterangan }}</td>
                             <td>{{ number_format($item->total_piutang) }}</td>
                             <td>
-                                <a href="/piutanglunas/{{ $item->id }}" class="btn btn-danger"> Belum Lunas</a>
+                                <a href="/piutanglunas/{{ $item->id }}" class="btn btn-danger""> Belum Lunas</a>
                             </td>
                             <td>
                                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editPiutang-{{ $item->id }}">Edit</button>

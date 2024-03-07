@@ -11,6 +11,7 @@ use App\Http\Controllers\ResumeProduksiController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\UangmasukController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\wipController;
 use App\Models\hutangbahanbaku;
 use App\Policies\ResumeProduksiPolicy;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('user/manager/resumeproduksi', [ResumeProduksiController::class, 'index'])->middleware('userAkses:manager');
     Route::post('user/manager/tambahResume', [ResumeProduksiController::class, 'tambahResume'])->middleware('userAkses:manager');
     Route::get('/getInOutData', [ResumeProduksiController::class, 'getInOutData']);
+
+    //wip
+    Route::get('/user/manager/wip', [wipController::class, 'index'])->middleware('userAkses:manager');
 
 
     //semua terkait owner taruh sini

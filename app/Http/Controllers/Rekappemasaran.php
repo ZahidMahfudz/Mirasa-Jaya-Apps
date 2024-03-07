@@ -29,6 +29,7 @@ class Rekappemasaran extends Controller
         $dropout = drop_out::orderBy('tanggal_do', 'desc')->get();
 
         return view('manager.rekappemasaran', compact('produk', 'produks', 'notacash', 'notanoncash', 'sss', 'countnotacashperproduct', 'countnotanoncashperproduct', 'dropout'));
+    //silanhkan ubah2 fungsi ini
     }
 
     public function tambahNota(Request  $request){

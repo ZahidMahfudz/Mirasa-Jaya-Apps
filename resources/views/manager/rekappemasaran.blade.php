@@ -158,6 +158,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="laporan_penjualan" role="tabpanel" aria-labelledby="laporan_penjualan-tab">
                     <div class="mt-2">
+                        //tampilkan datanya sesuai rujukan
                         <table class="table table-bordered table-striped table-sm border border-dark align-middle">
                             <thead>
                                 <tr>
@@ -181,7 +182,7 @@
 
                             </tbody>
                         </table>
-
+                        //sampai bagian ini
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nota_cash" role="tabpanel" aria-labelledby="nota_cash-tab">

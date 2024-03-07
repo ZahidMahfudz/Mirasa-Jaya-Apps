@@ -59,4 +59,6 @@ class ResumeProduksiController extends Controller
         return redirect('user/manager/resumeproduksi')->with('success', 'data berhasil ditambah');
     }
 
+    //silahkan buat fungsi jika diperlukan untuk ajax
+
 }

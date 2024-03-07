@@ -10,6 +10,7 @@ use App\Models\hutangbahanbaku;
 use App\Models\nota_pemasaran;
 use App\Models\piutang;
 use App\Models\produk;
+use App\Models\resep_wip;
 use App\Models\resume_produksi;
 use App\Models\sss;
 use App\Models\total_hutang_bahan_baku;
@@ -677,5 +678,131 @@ class DatabaseSeeder extends Seeder
         foreach ($resume_produksi as $key => $val) {
             resume_produksi::create($val);
         }
+
+        //resep wip (disesuaikan dengan ingredient dan berat diambil dari resep)
+        $resep = [
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Gula Pasir',
+                'gram'=>5000,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Telur',
+                'gram'=>1250,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Margarine Sania',
+                'gram'=>3000,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Susu Bubuk Innovate',
+                'gram'=>200,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Santan',
+                'gram'=>2000,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Perisa Vanila Penguin',
+                'gram'=>4,
+            ],
+            [
+                'nama_wip'=>'jladren',
+                'lini_produksi'=>'Sagu SP OP Dahlia',
+                'nama_komposisi'=>'Garam Halus',
+                'gram'=>11,
+            ],
+            //bagelen (adonan kering)
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Tepung Terigu Gerbang Biru/cakra',
+                'gram'=>2000,
+            ],
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Gula Pasir',
+                'gram'=>400,
+            ],
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Susu Bubuk Innovate',
+                'gram'=>60,
+            ],
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Garam Halus',
+                'gram'=>30,
+            ],
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Ragi Instant Mauripan',
+                'gram'=>50,
+            ],
+            [
+                'nama_wip'=>'Adonan Kering (Dough)',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Bakerin Plus',
+                'gram'=>20,
+            ],
+            //bagelen (cream)
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Margarine Sania',
+                'gram'=>1250,
+            ],
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Gula Halus',
+                'gram'=>1350,
+            ],
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Susu Bubuk Innovate',
+                'gram'=>225,
+            ],
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'BOS Sania',
+                'gram'=>225,
+            ],
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Shortening Sania',
+                'gram'=>225,
+            ],
+            [
+                'nama_wip'=>'Cream',
+                'lini_produksi'=>'Bagelen',
+                'nama_komposisi'=>'Pewarna Kuning Telur Bubuk',
+                'gram'=>6,
+            ],
+        ];
+        foreach ($resep as $key => $val) {
+            resep_wip::create($val);
+        };
+
+        //WIP
+
     }
 }
