@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\drop_out;
-use App\Models\nota_pemasaran;
-use App\Models\produk;
 use App\Models\sss;
+use App\Models\produk;
+use App\Models\drop_out;
 use Illuminate\Http\Request;
+use App\Models\nota_pemasaran;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class Rekappemasaran extends Controller
 {
@@ -17,18 +19,32 @@ class Rekappemasaran extends Controller
         $notacash = nota_pemasaran::where('jenis_nota', 'nota_cash')->get();
         $notanoncash = nota_pemasaran::where('jenis_nota', 'nota_noncash')->get();
         $sss = sss::orderBy('tanggal', 'desc')->get();
-        $countnotacashperproduct = nota_pemasaran::where('jenis_nota', 'nota_cash')
-                    ->groupBy('nama_barang')
-                    ->selectRaw('nama_barang, sum(nama_barang) as totalnotacashperproduct')
-                    ->get();
-
-        $countnotanoncashperproduct = nota_pemasaran::where('jenis_nota', 'nota_noncash')
-                    ->groupBy('nama_barang')
-                    ->selectRaw('nama_barang, sum(nama_barang) as totalnotanoncashperproduct')
-                    ->get();
         $dropout = drop_out::orderBy('tanggal_do', 'desc')->get();
+        $dojoinsss = DB::select('SELECT
+                    COALESCE(d.tanggal_do, s.tanggal) AS tanggal,
+                    COALESCE(d.nama_produk, s.nama_produk) AS nama_produk,
+                    COALESCE(s.sss, 0) AS sss,
+                    COALESCE(d.jumlah, 0) AS jumlah
+                FROM
+                    drop_outs d
+                LEFT JOIN
+                    ssses s ON d.tanggal_do = s.tanggal AND d.nama_produk = s.nama_produk
 
-        return view('manager.rekappemasaran', compact('produk', 'produks', 'notacash', 'notanoncash', 'sss', 'countnotacashperproduct', 'countnotanoncashperproduct', 'dropout'));
+                UNION
+
+                SELECT
+                    COALESCE(d.tanggal_do, s.tanggal) AS tanggal,
+                    COALESCE(d.nama_produk, s.nama_produk) AS nama_produk,
+                    COALESCE(s.sss, 0) AS sss,
+                    COALESCE(d.jumlah, 0) AS jumlah
+                FROM
+                    drop_outs d
+                RIGHT JOIN
+                    ssses s ON d.tanggal_do = s.tanggal AND d.nama_produk = s.nama_produk
+                ORDER BY tanggal
+                ');
+
+        return view('manager.rekappemasaran', compact('produk', 'produks', 'notacash', 'notanoncash', 'sss', 'dojoinsss', 'dropout'));
     //silanhkan ubah2 fungsi ini
     }
 

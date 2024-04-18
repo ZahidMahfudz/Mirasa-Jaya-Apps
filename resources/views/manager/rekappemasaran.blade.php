@@ -162,7 +162,7 @@
                         <table class="table table-bordered table-striped table-sm border border-dark align-middle">
                             <thead>
                                 <tr>
-                                    <th rowspan="2">No</th>
+                                    {{-- <th rowspan="2">No</th> --}}
                                     <th rowspan="2">Nama Produk</th>
                                     <th colspan="{{ count($dropout) }}">DO</th>
                                     <th rowspan="2">Jumlah</th>
@@ -172,8 +172,8 @@
                                 </tr>
                                 <tr>
                                     // tampilkan data yang sudah di fetch dalam fungsi sesuai rujukan
-                                    @foreach ($dropout as $do)
-                                        <th>Tanggal DO</th>
+                                    @foreach ($dojoinsss as $do)
+                                        <td>{{ $do->nama_produk }}</td>
                                     @endforeach
                                     <th>Tanggal SSS</th>
                                 </tr>

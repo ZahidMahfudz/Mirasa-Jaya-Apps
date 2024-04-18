@@ -81,8 +81,10 @@ Route::middleware(['auth'])->group(function(){
     Route::get('deletenota/{id}', [Rekappemasaran::class, 'deleteNota'])->middleware('userAkses:manager');
     //Resume Produksi
     Route::get('user/manager/resumeproduksi', [ResumeProduksiController::class, 'index'])->middleware('userAkses:manager');
-    Route::post('user/manager/tambahResume', [ResumeProduksiController::class, 'tambahResume'])->middleware('userAkses:manager');
-    Route::get('/getInOutData', [ResumeProduksiController::class, 'getInOutData']);
+    // Route::post('user/manager/tambahResume', [ResumeProduksiController::class, 'tambahResume'])->middleware('userAkses:manager');
+    // Route::get('/getInOutData', [ResumeProduksiController::class, 'getInOutData']);
+    Route::get('user/manager/tambahresumehariini', [ResumeProduksiController::class, 'generateResumeProduksi'])->middleware('userAkses:manager');
+    Route::post('/editresume/{id}', [ResumeProduksiController::class, 'editResume'])->name('editresume')->middleware('userAkses:manager');
 
     //wip
     Route::get('/user/manager/wip', [wipController::class, 'index'])->middleware('userAkses:manager');
@@ -102,5 +104,11 @@ Route::middleware(['auth'])->group(function(){
     Route::get('user/owner/cetakpiutang', [PiutangController::class, 'cetakpiutang'])->middleware('userAkses:owner');
     //rekapitulasi Penjualan
     Route::get('user/owner/rekapitulasipenjualan', [Rekappemasaran::class, 'indexowner'])->middleware('userAkses:owner');
+    //laporan produksi
+    Route::get('/user/owner/laporanproduksi', [ResumeProduksiController::class, 'indexlaporanproduksi'])->middleware('userAkses:owner');
+    Route::get('user/owner/filterlaporanproduksi', [ResumeProduksiController::class, 'filterlaporanproduksi'])->middleware('userAkses:owner');
+    Route::get('user/owner/cetak-laporan-produksi/{startDate}/{endDate}', [ResumeProduksiController::class, 'cetaklaporanproduksi'])->middleware('userAkses:owner');
+    //stok rpti jadi
+    Route::get('/user/owner/stokrotijadi', [ResumeProduksiController::class, 'indexstokrotijadi'])->middleware('userAkses:owner');
 
 });
