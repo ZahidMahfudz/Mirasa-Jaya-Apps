@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class resep_wip extends Model
+class bahan_resep extends Model
 {
     use HasFactory;
-    public $table = 'resep_wips';
+
+    protected $table = 'bahan_reseps';
 
     protected $guarded = [
         'id'
     ];
+
+    public function resep(){
+        return $this->belongsTo(resep::class, 'resep_id');
+    }
 }

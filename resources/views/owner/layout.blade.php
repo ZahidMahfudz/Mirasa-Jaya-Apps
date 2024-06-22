@@ -83,10 +83,8 @@
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="/user/owner/laporanproduksi" class="link-dark rounded">Laporan Produksi</a></li>
                         <li><a href="/user/owner/stokrotijadi" class="link-dark rounded">Stok Roti Jadi</a></li>
-                        <li><a href="#" class="link-dark rounded">Stok Bahan Baku dan Kardus</a></li>
-                        <li><a href="#" class="link-dark rounded">Stok Bahan Penolong</a></li>
-                        <li><a href="#" class="link-dark rounded">Stok Kardus</a></li>
-                        <li><a href="#" class="link-dark rounded">Work In Progress (WIP)</a></li>
+                        <li><a href="/user/owner/stokbb" class="link-dark rounded">Stok Bahan Baku, bahan penolong, dan wip</a></li>
+                        <li><a href="/user/owner/stokkardus" class="link-dark rounded">Stok Kardus</a></li>
                 </div>
             </li>
             <li class="mb-1">

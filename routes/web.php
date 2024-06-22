@@ -1,20 +1,23 @@
 <?php
 
-use App\Http\Controllers\BahanbakuController;
-use App\Http\Controllers\HutangbahanbakuController;
-use App\Http\Controllers\ManagerController;
-use App\Http\Controllers\OwnerController;
-use App\Http\Controllers\PiutangController;
-use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\Rekappemasaran;
-use App\Http\Controllers\ResumeProduksiController;
-use App\Http\Controllers\SesiController;
-use App\Http\Controllers\UangmasukController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\wipController;
 use App\Models\hutangbahanbaku;
-use App\Policies\ResumeProduksiPolicy;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
+use App\Policies\ResumeProduksiPolicy;
+use App\Http\Controllers\wipController;
+use App\Http\Controllers\Rekappemasaran;
+use App\Http\Controllers\SesiController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\PiutangController;
+use App\Http\Controllers\BahanbakuController;
+use App\Http\Controllers\UangmasukController;
+use App\Http\Controllers\ResumeProduksiController;
+use App\Http\Controllers\HutangbahanbakuController;
+use App\Http\Controllers\StokbbController;
+use App\Models\stokbb;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,16 +82,29 @@ Route::middleware(['auth'])->group(function(){
     Route::post('user/manager/tambahNota', [Rekappemasaran::class, 'tambahNota'])->middleware('userAkses:manager');
     Route::post('user/manager/editNota/{id}', [Rekappemasaran::class, 'editNota'])->middleware('userAkses:manager');
     Route::get('deletenota/{id}', [Rekappemasaran::class, 'deleteNota'])->middleware('userAkses:manager');
+    Route::get('user/manager/filterrekappemasaran', [Rekappemasaran::class, 'filter'])->middleware('userAkses:manager');
     //Resume Produksi
     Route::get('user/manager/resumeproduksi', [ResumeProduksiController::class, 'index'])->middleware('userAkses:manager');
-    // Route::post('user/manager/tambahResume', [ResumeProduksiController::class, 'tambahResume'])->middleware('userAkses:manager');
-    // Route::get('/getInOutData', [ResumeProduksiController::class, 'getInOutData']);
     Route::get('user/manager/tambahresumehariini', [ResumeProduksiController::class, 'generateResumeProduksi'])->middleware('userAkses:manager');
     Route::post('/editresume/{id}', [ResumeProduksiController::class, 'editResume'])->name('editresume')->middleware('userAkses:manager');
-
+    //resep wip
+    Route::get('/user/manager/resepwip', [StokbbController::class, 'indexresep'])->middleware('userAkses:manager');
+    Route::post('/resepstore', [StokbbController::class, 'resepstore'])->name('resepstore')->middleware('userAkses:manager');
+    Route::post('/resepdestroy/{id}', [StokbbController::class, 'resepdestroy'])->name('resepdestroy')->middleware('userAkses:manager');
+    Route::post('/resepupdate/{id}', [StokbbController::class, 'resepupdate'])->name('resepupdate')->middleware('userAkses:manager');
+    Route::post('/bahan_resepstore', [StokbbController::class, 'bahan_resepstore'])->name('bahan_resepstore')->middleware('userAkses:manager');
     //wip
-    Route::get('/user/manager/wip', [wipController::class, 'index'])->middleware('userAkses:manager');
-
+    Route::put('/editwip/{id}', [StokbbController::class, 'editwip'])->name('editwip')->middleware('userAkses:manager');
+    //stok bahan baku dan kardus
+    Route::get('/user/manager/stokbb', [StokbbController::class, 'indexstok'])->middleware('userAkses:manager');
+    Route::post('/editstokbb/{id}', [StokbbController::class, 'editstokbb'])->name('editstokbb')->middleware('userAkses:manager');
+    Route::post('/editstokbp/{id}', [StokbbController::class, 'editstokbp'])->name('editstokbp')->middleware('userAkses:manager');
+    Route::get('user/manager/generatestokbahanbaku', [StokbbController::class, 'generatestok'])->middleware('userAkses:manager');
+    //stok kardus
+    Route::get('/user/manager/kardus', [StokbbController::class, 'indexkardus'])->middleware('userAkses:manager');
+    Route::post('/editstokkardus/{id}', [StokbbController::class, 'editStokKardus'])->name('editstokkardus')->middleware('userAkses:manager');
+    Route::post('/tambahKardus/{id}', [StokbbController::class, 'tambahKardus'])->name('tambahKardus')->middleware('userAkses:manager');
+    Route::get('user/manager/generatestokkardus', [StokbbController::class, 'generateStokKardus'])->middleware('userAkses:manager');
 
     //semua terkait owner taruh sini
     Route::get('user/owner/dasboard', [OwnerController::class, 'dashboard'])->middleware('userAkses:owner');
@@ -110,5 +126,13 @@ Route::middleware(['auth'])->group(function(){
     Route::get('user/owner/cetak-laporan-produksi/{startDate}/{endDate}', [ResumeProduksiController::class, 'cetaklaporanproduksi'])->middleware('userAkses:owner');
     //stok rpti jadi
     Route::get('/user/owner/stokrotijadi', [ResumeProduksiController::class, 'indexstokrotijadi'])->middleware('userAkses:owner');
+    //stok kardus
+    Route::get('/user/owner/stokkardus',[StokbbController::class, 'indexownerkardus'])->middleware('userAkses:owner');
+    Route::get('/user/owner/filterstokkardus',[StokbbController::class, 'filterstokkardus'])->middleware('userAkses:owner');
+    Route::get('user/owner/cetak-stok-kardus-filter/{startDate}/{endDate}', [StokbbController::class, 'cetakstokkardus'])->middleware('userAkses:owner');
+    //stok bahan baku, bahan penolong, dan wip
+    Route::get('/user/owner/stokbb', [StokbbController::class, 'indexstokowner'])->middleware('userAkses:owner');
+    Route::get('/user/owner/cetak-stok-filter/{startDate}', [StokbbController::class, 'cetakstok'])->middleware('userAkses:owner');
+    Route::get('/user/owner/filterstokbb', [StokbbController::class, 'filterowner'])->middleware('userAkses:owner');
 
 });

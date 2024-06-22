@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resep_wips', function (Blueprint $table) {
+        Schema::create('stokbps', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_wip');
-            $table->string('lini_produksi');
-            $table->string('nama_komposisi');
-            $table->integer('gram');
+            $table->date('tanggal');
+            $table->string('nama_bahan');
+            $table->float('jumlah');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('resep_wips');
+        Schema::dropIfExists('stokbps');
     }
 };

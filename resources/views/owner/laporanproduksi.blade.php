@@ -57,6 +57,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $grandTotalProduk = 0;
+                        $grandTotalHargaProduk =0;
+                    @endphp
                     @foreach ($groupedData as $nama_produk => $data_per_produk)
                         <tr>
                             <td>{{ $nama_produk }}</td>
@@ -78,11 +82,14 @@
                             @endforeach
                             <td>{{ $total_produk }}</td>
                             <!-- Tampilkan harga satuan untuk produk ini -->
-                            <td>{{ number_format($produk[$nama_produk] ?? 'N/A') }}</td>
+                            <td>{{ number_format($produk[$nama_produk] ?? 0) }}</td>
                             <!-- Hitung total berdasarkan total_produk dan harga satuan -->
                             <td>{{ number_format(($produk[$nama_produk] ?? 0) * $total_produk) }}</td>
-
                         </tr>
+                        @php
+                            $grandTotalProduk += $total_produk;
+                            $grandTotalHargaProduk += ($produk[$nama_produk] ?? 0) * $total_produk;
+                        @endphp
                     @endforeach
                     <tr>
                         <td><b>Total</b></td>
@@ -96,9 +103,9 @@
                             @endphp
                             <td>{{ $total_in_column }}</td>
                         @endforeach
-                        <td>{{ $total_jumlah_produk }}</td>
+                        <td>{{ $grandTotalProduk }}</td>
                         <td></td>
-                        <td>{{ number_format($total_harga_produk) }}</td>
+                        <td>{{ number_format($grandTotalHargaProduk) }}</td>
                     </tr>
                 </tbody>
             </table>

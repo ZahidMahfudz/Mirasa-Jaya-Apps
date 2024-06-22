@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ResepWipSeeder extends Seeder
+class StokKardusSeeder extends Seeder
 {
     /**
      * Run the database seeds.

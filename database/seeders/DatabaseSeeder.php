@@ -4,15 +4,20 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\bahan_resep;
 use App\Models\bahanbaku;
 use App\Models\drop_out;
 use App\Models\hutangbahanbaku;
 use App\Models\nota_pemasaran;
 use App\Models\piutang;
 use App\Models\produk;
-use App\Models\resep_wip;
+use App\Models\rekap_resep;
+use App\Models\Resep;
 use App\Models\resume_produksi;
 use App\Models\sss;
+use App\Models\stok_kardus;
+use App\Models\stokbb;
+use App\Models\stokbp;
 use App\Models\total_hutang_bahan_baku;
 use App\Models\total_uang_masuk;
 use App\Models\uangmasukpiutang;
@@ -57,6 +62,15 @@ class DatabaseSeeder extends Seeder
                 'jenis_satuan'=>'Kg',
                 'harga_persatuan'=>540000,
                 'harga_perkilo'=>10800,
+            ],
+            [
+                'nama_bahan'=>'Gula Pasir',
+                'jenis'=>'bahan baku',
+                'satuan'=>'zak',
+                'banyak_satuan'=>50,
+                'jenis_satuan'=>'Kg',
+                'harga_persatuan'=>765000,
+                'harga_perkilo'=>15300,
             ],
 
             [
@@ -164,11 +178,11 @@ class DatabaseSeeder extends Seeder
                 'harga_satuan'=>74000
             ],
             [
-                'nama_produk'=>'Bagelen Sisir 2 KG',
+                'nama_produk'=>'Bagelen Sisir 2 Kg',
                 'harga_satuan'=>83000
             ],
             [
-                'nama_produk'=>'Bagelen Garlic Sisir 2 KG',
+                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
                 'harga_satuan'=>95000
             ],
             [
@@ -316,98 +330,98 @@ class DatabaseSeeder extends Seeder
         $nota_pemasaran = [
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-27',
+                'tanggal'=>'2024-02-2',
                 'nama_toko'=>'Bu Hj, Ragil, Ngablak',
                 'qty'=>50,
                 'nama_barang' => 'Bagelen 2 KG'
             ],
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-28',
+                'tanggal'=>'2024-02-3',
                 'nama_toko'=>'Bp. Tanto',
                 'qty'=>25,
                 'nama_barang' => 'Bagelen Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-28',
+                'tanggal'=>'2024-02-3',
                 'nama_toko'=>'Bu Hj Kartika, Kebumen',
-                'qty'=>70,
+                'qty'=>20,
                 'nama_barang' => 'Bagelen Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-28',
+                'tanggal'=>'2024-02-3',
                 'nama_toko'=>'Mb. Siwi, Ps Muntilan',
                 'qty'=>30,
                 'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-29',
+                'tanggal'=>'2024-02-4',
                 'nama_toko'=>'Mb. Siwi, Ps Muntilan',
                 'qty'=>30,
                 'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_cash',
-                'tanggal'=>'2024-02-29',
+                'tanggal'=>'2024-02-4',
                 'nama_toko'=>'Eco Roso, Magelang',
-                'qty'=>45,
+                'qty'=>5,
                 'nama_barang' => 'Bagelen 2 KG'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-26',
+                'tanggal'=>'2024-02-1',
                 'nama_toko'=>'Eco Roso, Magelang',
                 'qty'=>15,
                 'nama_barang' => 'Bagelen 2 KG'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-26',
+                'tanggal'=>'2024-02-1',
                 'nama_toko'=>'Seruni, Magelang',
                 'qty'=>25,
                 'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-27',
+                'tanggal'=>'2024-02-2',
                 'nama_toko'=>'Mb In, Magelang',
                 'qty'=>35,
                 'nama_barang' => 'Bagelen 2 KG'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-27',
+                'tanggal'=>'2024-02-2',
                 'nama_toko'=>'Mb Siti, Magelang',
                 'qty'=>35,
                 'nama_barang' => 'Bagelen Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-28',
+                'tanggal'=>'2024-02-3',
                 'nama_toko'=>'Niki Mantep, Salatiga',
                 'qty'=>35,
                 'nama_barang' => 'Bagelen Garlic Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-28',
+                'tanggal'=>'2024-02-3',
                 'nama_toko'=>'Bu Lastry, Ambarawa',
                 'qty'=>35,
                 'nama_barang' => 'Bagelen Sisir 2 Kg'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-29',
+                'tanggal'=>'2024-02-4',
                 'nama_toko'=>'Mb. Azizah, Kebumen',
-                'qty'=>35,
+                'qty'=>10,
                 'nama_barang' => 'Bagelen 2 KG'
             ],
             [
                 'jenis_nota'=>'nota_noncash',
-                'tanggal'=>'2024-02-29',
+                'tanggal'=>'2024-02-5',
                 'nama_toko'=>'Mb. Siti, Magelang',
                 'qty'=>35,
                 'nama_barang' => 'Bagelen 2 KG'
@@ -417,157 +431,29 @@ class DatabaseSeeder extends Seeder
             nota_pemasaran::create($val);
         };
 
-        //drop_out
-        $dropout = [
-            [
-                'tanggal_do'=>'2024-02-26',
-                'nama_produk'=>'Bagelen 2 KG',
-                'jumlah'=>50,
-            ],
-            [
-                'tanggal_do'=>'2024-02-26',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'jumlah'=>45,
-            ],
-            [
-                'tanggal_do'=>'2024-02-26',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'jumlah'=>60,
-            ],
-            [
-                'tanggal_do'=>'2024-02-27',
-                'nama_produk'=>'Bagelen 2 KG',
-                'jumlah'=>75,
-            ],
-            [
-                'tanggal_do'=>'2024-02-27',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'jumlah'=>70,
-            ],
-            [
-                'tanggal_do'=>'2024-02-27',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'jumlah'=>55,
-            ],
-            [
-                'tanggal_do'=>'2024-02-28',
-                'nama_produk'=>'Bagelen 2 KG',
-                'jumlah'=>80,
-            ],
-            [
-                'tanggal_do'=>'2024-02-28',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'jumlah'=>95,
-            ],
-            [
-                'tanggal_do'=>'2024-02-28',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'jumlah'=>115,
-            ],
-            [
-                'tanggal_do'=>'2024-02-29',
-                'nama_produk'=>'Bagelen 2 KG',
-                'jumlah'=>5,
-            ],
-            [
-                'tanggal_do'=>'2024-02-29',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'jumlah'=>10,
-            ],
-            [
-                'tanggal_do'=>'2024-02-29',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'jumlah'=>20,
-            ],
-        ];
-        foreach ($dropout as $key => $val) {
-            drop_out::create($val);
-        };
-
-        //sss
-        $sss = [
-            [
-                'tanggal'=>'2024-02-25',
-                'nama_produk'=>'Bagelen 2 KG',
-                'sss'=>500,
-            ],
-            [
-                'tanggal'=>'2024-02-25',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'sss'=>500,
-            ],
-            [
-                'tanggal'=>'2024-02-25',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'sss'=>500,
-            ],
-            [
-                'tanggal'=>'2024-02-26',
-                'nama_produk'=>'Bagelen 2 KG',
-                'sss'=>535,
-            ],
-            [
-                'tanggal'=>'2024-02-26',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'sss'=>545,
-            ],
-            [
-                'tanggal'=>'2024-02-26',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'sss'=>535,
-            ],
-            [
-                'tanggal'=>'2024-02-27',
-                'nama_produk'=>'Bagelen 2 KG',
-                'sss'=>525,
-            ],
-            [
-                'tanggal'=>'2024-02-27',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'sss'=>580,
-            ],
-            [
-                'tanggal'=>'2024-02-27',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'sss'=>590,
-            ],
-            [
-                'tanggal'=>'2024-02-28',
-                'nama_produk'=>'Bagelen 2 KG',
-                'sss'=>605,
-            ],
-            [
-                'tanggal'=>'2024-02-28',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'sss'=>545,
-            ],
-            [
-                'tanggal'=>'2024-02-28',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'sss'=>640,
-            ],
-            [
-                'tanggal'=>'2024-02-29',
-                'nama_produk'=>'Bagelen 2 KG',
-                'sss'=>495,
-            ],
-            [
-                'tanggal'=>'2024-02-29',
-                'nama_produk'=>'Bagelen Sisir 2 Kg',
-                'sss'=>555,
-            ],
-            [
-                'tanggal'=>'2024-02-29',
-                'nama_produk'=>'Bagelen Garlic Sisir 2 Kg',
-                'sss'=>630,
-            ],
-        ];
-        foreach ($sss as $key => $val) {
-            sss::create($val);
-        };
-
         //resume produksi
         $resume_produksi = [
+            [
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen 2 KG',
+                'in' => 0,
+                'out' => 0,
+                'sisa' => 0,
+            ],
+            [
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'in' => 0,
+                'out' => 0,
+                'sisa' => 0,
+            ],
+            [
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'in' => 0,
+                'out' => 0,
+                'sisa' => 0,
+            ],
             [
                 'tanggal' => '2024-02-1',
                 'nama_produk' => 'Bagelen 2 KG',
@@ -679,130 +565,437 @@ class DatabaseSeeder extends Seeder
             resume_produksi::create($val);
         }
 
-        //resep wip (disesuaikan dengan ingredient dan berat diambil dari resep)
-        $resep = [
+        $sss = [
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Gula Pasir',
-                'gram'=>5000,
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 100,
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Telur',
-                'gram'=>1250,
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 100,
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Margarine Sania',
-                'gram'=>3000,
+                'tanggal' => '2024-01-31',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 100,
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Susu Bubuk Innovate',
-                'gram'=>200,
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 95//100+10-(15+0),
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Santan',
-                'gram'=>2000,
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 110//100+10,
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Perisa Vanila Penguin',
-                'gram'=>4,
+                'tanggal' => '2024-02-1',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 85 //100+10-(25),
             ],
             [
-                'nama_wip'=>'jladren',
-                'lini_produksi'=>'Sagu SP OP Dahlia',
-                'nama_komposisi'=>'Garam Halus',
-                'gram'=>11,
-            ],
-            //bagelen (adonan kering)
-            [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Tepung Terigu Gerbang Biru/cakra',
-                'gram'=>2000,
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 25// 95+15-(50+35),
             ],
             [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Gula Pasir',
-                'gram'=>400,
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 85 //110+10-(35),
             ],
             [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Susu Bubuk Innovate',
-                'gram'=>60,
+                'tanggal' => '2024-02-2',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 100 //85+15,
             ],
             [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Garam Halus',
-                'gram'=>30,
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 40 //25+15
             ],
             [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Ragi Instant Mauripan',
-                'gram'=>50,
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 40 //85+35-(20+25+35)
             ],
             [
-                'nama_wip'=>'Adonan Kering (Dough)',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Bakerin Plus',
-                'gram'=>20,
-            ],
-            //bagelen (cream)
-            [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Margarine Sania',
-                'gram'=>1250,
+                'tanggal' => '2024-02-3',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 70 //100+35-(30+35) ,
             ],
             [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Gula Halus',
-                'gram'=>1350,
+                'tanggal' => '2024-02-4',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 35 //40+10-(5+10)
             ],
             [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Susu Bubuk Innovate',
-                'gram'=>225,
+                'tanggal' => '2024-02-4',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 65 //40+25-()
             ],
             [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'BOS Sania',
-                'gram'=>225,
+                'tanggal' => '2024-02-4',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 60 //70+20-(30+)
             ],
             [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Shortening Sania',
-                'gram'=>225,
+                'tanggal' => '2024-02-5',
+                'nama_produk' => 'Bagelen 2 KG',
+                'sss' => 15 //35+15-(35)
             ],
             [
-                'nama_wip'=>'Cream',
-                'lini_produksi'=>'Bagelen',
-                'nama_komposisi'=>'Pewarna Kuning Telur Bubuk',
-                'gram'=>6,
+                'tanggal' => '2024-02-5',
+                'nama_produk' => 'Bagelen Sisir 2 Kg',
+                'sss' => 85 //65+20
+            ],
+            [
+                'tanggal' => '2024-02-5',
+                'nama_produk' => 'Bagelen Garlic Sisir 2 Kg',
+                'sss' => 85 //60+25
             ],
         ];
-        foreach ($resep as $key => $val) {
-            resep_wip::create($val);
+        foreach ($sss as $key => $val) {
+            sss::create($val);
+        }
+
+
+        //stok kardus
+        $stokkardus = [
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-4-30',
+                'pakai'=>0,
+                'sisa'=>100,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-4-30',
+                'pakai'=>0,
+                'sisa'=>100,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-4-30',
+                'pakai'=>0,
+                'sisa'=>100,
+            ],
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-05-1',
+                'pakai'=>50,
+                'sisa'=>50,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-05-1',
+                'pakai'=>10,
+                'sisa'=>90,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-05-1',
+                'pakai'=>30,
+                'sisa'=>70,
+            ],
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-05-2',
+                'pakai'=>10,
+                'sisa'=>40,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-05-2',
+                'pakai'=>20,
+                'sisa'=>70,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-05-2',
+                'pakai'=>10,
+                'sisa'=>60,
+            ],
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-05-3',
+                'pakai'=>0,
+                'sisa'=>150,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-05-3',
+                'pakai'=>0,
+                'sisa'=>150,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-05-3',
+                'pakai'=>0,
+                'sisa'=>150,
+            ],
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-05-4',
+                'pakai'=>35,
+                'sisa'=>115,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-05-4',
+                'pakai'=>20,
+                'sisa'=>130,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-05-4',
+                'pakai'=>10,
+                'sisa'=>140,
+            ],
+            [
+                'nama_kardus'=>'Kardus BP Jaya Mirasa 3 kg',
+                'tanggal'=>'2024-05-5',
+                'pakai'=>50,
+                'sisa'=>65,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kerut Jaya Mirasa 5 kg',
+                'tanggal'=>'2024-05-5',
+                'pakai'=>40,
+                'sisa'=>90,
+            ],
+            [
+                'nama_kardus'=>'Kardus Sagu Kidung 5 kg',
+                'tanggal'=>'2024-05-5',
+                'pakai'=>40,
+                'sisa'=>100,
+            ],
+        ];
+        foreach ($stokkardus as $key => $val) {
+            stok_kardus::create($val);
         };
 
-        //WIP
+        $stokbahanbaku = [
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=>'Tepung Terigu Gerbang Biru',
+                'gudang'=> 12.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=>'Tepung Terigu Melati',
+                'gudang'=> 12.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=>'Tepung Terigu Gudang Aci',
+                'gudang'=> 12.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=>'Gula Pasir',
+                'gudang'=> 12.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=>'Tepung Terigu Gerbang Biru',
+                'gudang'=> 50,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=>'Tepung Terigu Melati',
+                'gudang'=> 25,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=>'Tepung Terigu Gudang Aci',
+                'gudang'=> 65.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=>'Gula Pasir',
+                'gudang'=> 65.5,
+                'sisa_resep'=> 5.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=>'Tepung Terigu Gerbang Biru',
+                'gudang'=> 24.5,
+                'sisa_resep'=> 3.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=>'Tepung Terigu Melati',
+                'gudang'=> 20,
+                'sisa_resep'=> 2.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=>'Tepung Terigu Gudang Aci',
+                'gudang'=> 30.5,
+                'sisa_resep'=> 1.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=>'Gula Pasir',
+                'gudang'=> 30.5,
+                'sisa_resep'=> 1.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=>'Tepung Terigu Gerbang Biru',
+                'gudang'=> 50.5,
+                'sisa_resep'=> 3.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=>'Tepung Terigu Melati',
+                'gudang'=> 120,
+                'sisa_resep'=> 2.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=>'Tepung Terigu Gudang Aci',
+                'gudang'=> 60.5,
+                'sisa_resep'=> 1.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=>'Gula Pasir',
+                'gudang'=> 75.5,
+                'sisa_resep'=> 1.5
+            ],
+        ];
+        foreach ($stokbahanbaku as $key => $val) {
+            stokbb::create($val);
+        };
 
+        $stokbahanpenolong = [
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=> 'Gas Elpiji',
+                'jumlah'=> 5
+            ],
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=> 'Plastik BP (50x60x0,4)',
+                'jumlah'=> 3
+            ],
+            [
+                'tanggal'=> '2024-05-4',
+                'nama_bahan'=> 'Plastik SAGU O (60x60x0,4)',
+                'jumlah'=> 4
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=> 'Gas Elpiji',
+                'jumlah'=> 6
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=> 'Plastik BP (50x60x0,4)',
+                'jumlah'=> 9.5
+            ],
+            [
+                'tanggal'=> '2024-05-11',
+                'nama_bahan'=> 'Plastik SAGU O (60x60x0,4)',
+                'jumlah'=> 8.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=> 'Gas Elpiji',
+                'jumlah'=> 2
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=> 'Plastik BP (50x60x0,4)',
+                'jumlah'=> 4.5
+            ],
+            [
+                'tanggal'=> '2024-05-18',
+                'nama_bahan'=> 'Plastik SAGU O (60x60x0,4)',
+                'jumlah'=> 6.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=> 'Gas Elpiji',
+                'jumlah'=> 2
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=> 'Plastik BP (50x60x0,4)',
+                'jumlah'=> 4.5
+            ],
+            [
+                'tanggal'=> '2024-05-25',
+                'nama_bahan'=> 'Plastik SAGU O (60x60x0,4)',
+                'jumlah'=> 6.5
+            ],
+        ];
+        foreach ($stokbahanpenolong as $key => $val) {
+            stokbp::create($val);
+        };
+
+        //resep
+        resep::create(['nama_resep' => 'Adonan Gula', 'lini_produksi' => 'BP']);
+        resep::create(['nama_resep' => 'Terigu', 'lini_produksi' => 'BP']);
+        resep::create(['nama_resep' => 'Jladren', 'lini_produksi' => 'SP,OP,Dahlia,Sagu Mini']);
+        resep::create(['nama_resep' => 'Pati', 'lini_produksi' => 'SP,OP,Dahlia,Sagu Mini']);
+
+        //bahan_resep
+        // Data bahan untuk resep adonan gula
+        bahan_resep::create(['resep_id' => 1, 'nama_bahan' => 'Gula Pasir', 'jumlah_bahan_gr' => 3550, 'jumlah_bahan_kg' => 3.550, 'jumlah_bahan_zak' => 3.550/50]);
+        bahan_resep::create(['resep_id' => 1, 'nama_bahan' => 'Garam Halus Cipta Rasa', 'jumlah_bahan_gr' => 10.5, 'jumlah_bahan_kg' => 0.0105, 'jumlah_bahan_zak' => 0.0105/50]);
+        bahan_resep::create(['resep_id' => 1, 'nama_bahan' => 'Pewarna Kuning Telur Bubuk', 'jumlah_bahan_gr' => 0, 'jumlah_bahan_kg' => 0, 'jumlah_bahan_zak' => 0]);
+        bahan_resep::create(['resep_id' => 1, 'nama_bahan' => 'Perisa Vanila Penguin', 'jumlah_bahan_gr' => 2.0, 'jumlah_bahan_kg' => 2.0, 'jumlah_bahan_zak' => 2.0/100]);
+
+        // Data bahan untuk resep Terigu
+        bahan_resep::create(['resep_id' => 2, 'nama_bahan' => 'Tepung Terigu Melati', 'jumlah_bahan_gr' => 3650, 'jumlah_bahan_kg' => 3.650, 'jumlah_bahan_zak' => 3.650/25]);
+
+        // Data bahan untuk resep Jladren
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Gula Pasir', 'jumlah_bahan_gr' => 270000, 'jumlah_bahan_kg' => 270, 'jumlah_bahan_zak' => 5.4]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Telur', 'jumlah_bahan_gr' => 67500, 'jumlah_bahan_kg' => 67.5, 'jumlah_bahan_zak' => 6.8]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Margarin Sania/Simas/Sovia', 'jumlah_bahan_gr' => 162000, 'jumlah_bahan_kg' => 162, 'jumlah_bahan_zak' => 10.8]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Susu Bubuk Innovate', 'jumlah_bahan_gr' => 10800, 'jumlah_bahan_kg' => 10.8, 'jumlah_bahan_zak' => 0.4]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Santan', 'jumlah_bahan_gr' => 108000, 'jumlah_bahan_kg' => 108, 'jumlah_bahan_zak' => 108]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Perisa Vanila Penguin', 'jumlah_bahan_gr' => 216, 'jumlah_bahan_kg' => 216, 'jumlah_bahan_zak' => 2.2]);
+        bahan_resep::create(['resep_id' => 3, 'nama_bahan' => 'Garam Halus Cipta Rasa', 'jumlah_bahan_gr' => 594, 'jumlah_bahan_kg' => 0.6, 'jumlah_bahan_zak' => 0]);
+
+        // Data bahan untuk resep Pati
+        bahan_resep::create(['resep_id' => 4, 'nama_bahan' => 'Tepung Terigu Gudang Aci', 'jumlah_bahan_gr' => 265000, 'jumlah_bahan_kg' => 265, 'jumlah_bahan_zak' => 5.3]);
+        bahan_resep::create(['resep_id' => 4, 'nama_bahan' => 'Tepung Terigu Melati', 'jumlah_bahan_gr' => 26500, 'jumlah_bahan_kg' => 26.5, 'jumlah_bahan_zak' => 1.1]);
+
+        //rekapresep
+        // Define dates
+        $dates = [
+            '2024-05-04',
+            '2024-05-11',
+            '2024-05-18',
+            '2024-05-25',
+        ];
+
+        // Get all reseps
+        $reseps = Resep::all();
+
+        // Insert dummy data for each date and each resep
+        foreach ($dates as $date) {
+            foreach ($reseps as $resep) {
+                rekap_resep::create([
+                    'resep_id' => $resep->id,
+                    'tanggal' => Carbon::parse($date),
+                    'jumlah_resep' => rand(1, 10), // Random amount for dummy data
+                ]);
+            }
+        }
     }
+
 }

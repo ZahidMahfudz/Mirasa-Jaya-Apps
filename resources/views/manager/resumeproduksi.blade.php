@@ -14,8 +14,12 @@
         <div class="card-header">
             <div class="alert alert-warning mt-2" role="alert">
                 <p style="margin-bottom: 0;"><b>PENTING!</b></p>
-                <p style="margin-bottom: 0;"><b>Pastikan data sudah benar untuk semua produk sebelum menambah resume hari ini</b></p>
+                <ul style="margin-top: 0; margin-bottom: 0;">
+                    <li><b>Pastikan data sudah benar untuk semua produk sebelum menambah resume hari ini</b></li>
+                    <li><b>Pastikan untuk generate produksi "setiap hari"</b></li>
+                </ul>
             </div>
+
         </div>
         <div class="card-body">
             <table class="table table-bordered table-striped table-sm border border-dark align-middle">
@@ -25,6 +29,7 @@
                         @foreach ($uniqueDates as $tanggal)
                             <th colspan="3">{{ $tanggal }}</th>
                         @endforeach
+                        <th rowspan="2" style="text-align: center; vertical-align: middle;">Aksi</th>
                     </tr>
                     <tr>
                         @foreach ($uniqueDates as $tanggal)
@@ -69,7 +74,7 @@
                                 <td>{{ $out != 0 ? $out : '' }}</td>
                                 <td>{{ $sisa != 0 ? $sisa : '' }}</td>
                             @endforeach
-                            <td>
+                            <td style="text-align: center;">
                                 <!-- Tombol atau tautan untuk memicu modal -->
                                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal{{ $data_per_produk->first()->id}}">Edit</button>
                             </td>
@@ -95,14 +100,14 @@
                                                 <input type="text" name="nama_produk" id="nama_produk" class="form-control" value="{{ $nama_produk }}" disabled>
                                             </div>
                                             <div class="mt-2">
-                                                <label for="in" class="form-label">Total Piutang:</label>
+                                                <label for="in" class="form-label">IN:</label>
                                                 <input type="number" name="in" id="in" class="form-control @error('in') is-invalid @enderror" value="{{ old('in', $data_per_produk->first()->in ) }}">
                                                 @error('in')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="mt-2">
-                                                <label for="out" class="form-label">Total Piutang:</label>
+                                                <label for="out" class="form-label">OUT:</label>
                                                 <input type="number" name="out" id="out" class="form-control @error('out') is-invalid @enderror" value="{{ old('out', $data_per_produk->first()->out ) }}">
                                                 @error('out')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -136,9 +141,9 @@
                                     return $data_tanggal ? $data_tanggal->sisa : 0;
                                 });
                             @endphp
-                            <td>{{ $total_in_column }}</td>
-                            <td>{{ $total_out_column }}</td>
-                            <td>{{ $total_sisa_column }}</td>
+                            <td><b>{{ $total_in_column }}</b></td>
+                            <td><b>{{ $total_out_column }}</b></td>
+                            <td><b>{{ $total_sisa_column }}</b></td>
                         @endforeach
                     </tr>
 

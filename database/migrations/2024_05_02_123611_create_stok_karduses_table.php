@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('drop_outs', function (Blueprint $table) {
+        Schema::create('stok_karduses', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal_do');
-            $table->string('nama_produk');
-            $table->integer('jumlah');
+            $table->string('nama_kardus');
+            $table->date('tanggal');
+            $table->integer('pakai');
+            $table->integer('sisa');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('drop_outs');
+        Schema::dropIfExists('stok_karduses');
     }
 };

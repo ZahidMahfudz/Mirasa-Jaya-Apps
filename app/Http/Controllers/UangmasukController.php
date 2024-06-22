@@ -204,8 +204,6 @@ class UangmasukController extends Controller
             $retailQuery->whereBetween('tanggal', [$startDate, $endDate]);
         }
 
-        $piutang = $piutangQuery->get();
-        $retail = $retailQuery->get();
 
         $piutang = $piutangQuery->get();
         $retail = $retailQuery->get();

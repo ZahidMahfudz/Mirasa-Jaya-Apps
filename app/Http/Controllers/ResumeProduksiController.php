@@ -17,20 +17,13 @@ class ResumeProduksiController extends Controller
      */
     public function index()
     {
-        // // Temukan tanggal paling terbaru dalam data resume
-        // $tanggalTerbaru = resume_produksi::max('tanggal');
+        $endDate = resume_produksi::max('tanggal');
+        $startDate = date('Y-m-d', strtotime('-5 days', strtotime($endDate)));
 
-        // // Kurangkan tanggal paling terbaru dengan 6 hari untuk mendapatkan tanggal mulai
-        // $tanggalMulai = Carbon::parse($tanggalTerbaru)->subDays(6)->toDateString();
 
-        // // Ambil data resume hanya 6 hari terakhir sejak tanggal mulai
-        // $data_resume = resume_produksi::whereDate('tanggal', '>=', $tanggalMulai)
-        //                                 ->orderBy('tanggal', 'desc')
-        //                                 ->get();
-
-        $data_resume = resume_produksi::orderBy('tanggal', 'desc')->get();
+        $data_resume = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])->orderBy('tanggal', 'desc')->get();
         $groupedData = $data_resume->groupBy('nama_produk');
-        $uniqueDates = resume_produksi::distinct('tanggal')->pluck('tanggal')->toArray();
+        $uniqueDates = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])->distinct('tanggal')->pluck('tanggal')->toArray();
 
         return view('manager.resumeproduksi', compact('groupedData', 'uniqueDates'));
     }
@@ -72,7 +65,15 @@ class ResumeProduksiController extends Controller
             ]);
         }
 
-        return redirect('user/manager/resumeproduksi')->with('success', 'Data berhasil ditambah.');
+        // Setelah menambahkan data baru, perbarui variabel $groupedData dan $uniqueDates
+        $endDate = resume_produksi::max('tanggal');
+        $startDate = date('Y-m-d', strtotime('-5 days', strtotime($endDate)));
+        $data_resume = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])->orderBy('tanggal', 'desc')->get();
+        $groupedData = $data_resume->groupBy('nama_produk');
+        $uniqueDates = resume_produksi::distinct('tanggal')->pluck('tanggal')->toArray();
+
+        // Redirect kembali ke halaman resumeproduksi dengan variabel yang diperbarui
+        return redirect('user/manager/resumeproduksi')->with(compact('groupedData', 'uniqueDates'))->with('success', 'Data berhasil ditambah.');
     }
 
 
@@ -86,13 +87,27 @@ class ResumeProduksiController extends Controller
         // Temukan data resume sesuai ID
         $resume = resume_produksi::findOrFail($id);
 
+        // Temukan tanggal sebelumnya
+        $tanggal_sebelumnya = date('Y-m-d', strtotime('-1 day', strtotime($resume->tanggal)));
+
+        // Temukan data resume produksi untuk tanggal sebelumnya, jika ada
+        $resume_sebelumnya = resume_produksi::where('tanggal', $tanggal_sebelumnya)->where('nama_produk', $resume->nama_produk)->first();
+
+        // Hitung sisa sesuai kondisi
+        if ($resume_sebelumnya) {
+            $sisa_sebelumnya = $resume_sebelumnya->sisa;
+        } else {
+            // Jika tidak ada data untuk tanggal sebelumnya, asumsikan sisa sebelumnya adalah 0
+            $sisa_sebelumnya = 0;
+        }
+
         // Hitung sisa sesuai kondisi
         if ($resume->sisa === null) {
             $sisa = $request->input('in') - $request->input('out');
         } elseif ($resume->sisa == 0) {
             $sisa = $request->input('in') - $request->input('out');
         } else {
-            $sisa = $resume->sisa + $request->input('in') - $request->input('out');
+            $sisa = $sisa_sebelumnya + $request->input('in') - $request->input('out');
         }
 
         // Pastikan sisa tidak negatif
@@ -108,27 +123,29 @@ class ResumeProduksiController extends Controller
         return redirect('user/manager/resumeproduksi')->with('success', 'Data berhasil diperbarui');
     }
 
-    public function indexlaporanproduksi(){
+    public function indexlaporanproduksi()
+    {
         $endDate = resume_produksi::max('tanggal');
         $startDate = date('Y-m-d', strtotime('-5 days', strtotime($endDate)));
 
         // Ambil data resume produksi antara rentang tanggal yang diberikan
         $data_resume = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])
-                                        ->orderBy('tanggal', 'desc')
-                                        ->get();
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         $groupedData = $data_resume->groupBy('nama_produk');
         $uniqueDates = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])
-                                    ->distinct('tanggal')
-                                    ->pluck('tanggal')
-                                    ->toArray();
+            ->distinct('tanggal')
+            ->pluck('tanggal')
+            ->toArray();
         $produk = produk::pluck('harga_satuan', 'nama_produk');
 
         return view('owner.laporanproduksi', compact('groupedData', 'uniqueDates', 'produk', 'startDate', 'endDate'));
     }
 
 
-    public function filterlaporanproduksi(Request $request){
+    public function filterlaporanproduksi(Request $request)
+    {
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
 
@@ -148,27 +165,29 @@ class ResumeProduksiController extends Controller
         return view('owner.laporanproduksi', compact('groupedData', 'uniqueDates', 'produk', 'startDate', 'endDate'));
     }
 
-    public function cetaklaporanproduksi($startDate, $endDate){
+    public function cetaklaporanproduksi($startDate, $endDate)
+    {
         $startDate = $startDate;
         $endDate = $endDate;
 
         $data_resume = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])
-                                        ->orderBy('tanggal', 'desc')
-                                        ->get();
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         $groupedData = $data_resume->groupBy('nama_produk');
         $uniqueDates = resume_produksi::whereBetween('tanggal', [$startDate, $endDate])
-                                    ->distinct('tanggal')
-                                    ->pluck('tanggal')
-                                    ->toArray();
+            ->distinct('tanggal')
+            ->pluck('tanggal')
+            ->toArray();
         $produk = produk::pluck('harga_satuan', 'nama_produk');
 
         return view('owner.cetaklaporanproduksi', compact('groupedData', 'uniqueDates', 'produk', 'startDate', 'endDate'));
-
     }
 
-    public function indexstokrotijadi(){
+    public function indexstokrotijadi()
+    {
         $endDate = resume_produksi::max('tanggal');
+
         $data_resume = resume_produksi::where('tanggal', $endDate)->orderBy('tanggal', 'desc')->get();
         $groupedData = $data_resume->groupBy('nama_produk');
         $uniqueDates = [$endDate];
