@@ -78,10 +78,10 @@ main {
 }
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
-  background-color: #6363e0;
+  background-color: #6adf7c;
 }
 .btn-toggle-nav[aria-expanded="true"] {
-    background-color: #6363e0;
+    background-color: #6adf7c;
     color: #fff; /* Ubah warna teks jika perlu */
 }
 
@@ -92,17 +92,6 @@ main {
 .fw-semibold { font-weight: 600; }
 .lh-tight { line-height: 1.25; }
 
-.scrollable-div {
-    width: 300px;
-    height: 100vh; /* Sesuaikan tinggi sesuai kebutuhan */
-    overflow: auto; /* Atau gunakan overflow: scroll; */
-    align-items: center;
-    justify-content: center;
-    /* tambahkan properti lain sesuai kebutuhan */
-  }
 
-  .scrollable-div img {
-    margin-bottom: 1rem; /* Sesuaikan sesuai kebutuhan */
-  }
 
 

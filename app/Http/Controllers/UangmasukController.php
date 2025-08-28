@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\nota_pemasaran;
 use App\Models\produk;
 use App\Models\total_uang_masuk;
 use App\Models\uangmasukpiutang;
@@ -11,12 +12,46 @@ use App\Models\uangmasukretail;
 
 class UangmasukController extends Controller
 {
-    public function index(){
-        $retail = uangmasukretail::orderBy('tanggal', 'desc')->get();
-        $piutang = uangmasukpiutang::orderBy('tanggal', 'desc')->get();
-        $totaluangmasuk = total_uang_masuk::all();
-        $produk = produk::all();
-        return view('manager.uangmasuk', compact('retail','piutang','totaluangmasuk','produk'));
+    public function showUangMasuk($startDate, $endDate){
+        $retail = nota_pemasaran::where('keterangan', 'retail')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('tanggal', 'desc')
+            ->get();
+        $piutang = nota_pemasaran::where('status', 'lunas')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->whereDoesntHave('item_nota', function ($query) {
+                $query->where('keterangan', 'like', '%retail%');
+            })
+            ->with('item_nota')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+        $totalpiutang = nota_pemasaran::where('status', 'lunas')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->whereDoesntHave('item_nota', function ($query) {
+            $query->where('keterangan', 'retail');
+            })
+            ->sum('total_nota');
+        $totalretail = nota_pemasaran::where('keterangan', 'retail')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->sum('total_nota');
+        $totaluangmasuk = $totalpiutang + $totalretail;
+        $update = nota_pemasaran::whereNotNull('tanggal_lunas')
+            ->whereBetween('tanggal_lunas', [$startDate, $endDate])
+            ->orderBy('tanggal_lunas', 'desc')
+            ->value('tanggal_lunas');
+
+        if(request()->is("user/owner/cetak-uang-masuk/$startDate/$endDate")){
+            return view('cetak.cetakuangmasuk', compact('retail', 'piutang', 'totalpiutang', 'totalretail', 'totaluangmasuk', 'update', 'startDate', 'endDate'));
+        }
+
+        if (auth()->user()->role === 'manager') {
+            return view('manager.uangmasuk', compact('retail', 'piutang', 'totalpiutang', 'totalretail', 'totaluangmasuk', 'update'));
+        } elseif (auth()->user()->role === 'owner') {
+            return view('owner.uangmasuk', compact('retail', 'piutang', 'totalpiutang', 'totalretail', 'totaluangmasuk', 'update', 'startDate', 'endDate'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+        // dd($piutang);
     }
 
     public function tambahuangmasukpiutang(Request $request){
@@ -35,24 +70,34 @@ class UangmasukController extends Controller
             'total_piutang'=>$request->input('total_piutang'),
         ]);
 
-        $totaluangmasuk = uangmasukpiutang::sum('total_piutang') + uangmasukretail::sum('jumlah');
+        $data_total_uang_masuk = total_uang_masuk::first();
 
-        total_uang_masuk::updateOrCreate(
-            ['id'=>1],
-            [
-                'total_uang_masuk'=>$totaluangmasuk,
-                'update'=>now()
-            ]
-        );
+        if(!$data_total_uang_masuk){
+            total_uang_masuk::create([
+                'total_uang_masuk' => $request->input('total_piutang'),
+                'update' => now()
+            ]);
+        }
+        else{
+            $totaluangmasuk = $request->input('total_piutang') + $data_total_uang_masuk->total_uang_masuk;
+    
+            total_uang_masuk::updateOrCreate(
+                ['id'=>1],
+                [
+                    'total_uang_masuk'=>$totaluangmasuk,
+                    'update'=>now()
+                ]
+            );
+        }
 
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('success', 'data berhasil ditambah');
     }
 
     public function tambahretail(Request $request){
         $request->validate([
             'tanggal' => 'required|date',
             'nama_produk' => 'required',
-            'qty' => 'required|numeric|min:1',
+            'qty' => 'required|numeric',
             'satuan' => 'required',
         ]);
 
@@ -69,17 +114,27 @@ class UangmasukController extends Controller
             'jumlah'=>$jumlah,
         ]);
 
-        $totaluangmasuk = uangmasukpiutang::sum('total_piutang') + uangmasukretail::sum('jumlah');
+        $data_total_uang_masuk = total_uang_masuk::first();
 
-        total_uang_masuk::updateOrCreate(
-            ['id'=>1],
-            [
-                'total_uang_masuk'=>$totaluangmasuk,
-                'update'=>now()
-            ]
-        );
+        if(!$data_total_uang_masuk){
+            total_uang_masuk::create([
+                'total_uang_masuk' => $jumlah,
+                'update' => now()
+            ]);
+        }
+        else{
+            $totaluangmasuk = $jumlah + $data_total_uang_masuk->total_uang_masuk;
+    
+            total_uang_masuk::updateOrCreate(
+                ['id'=>1],
+                [
+                    'total_uang_masuk'=>$totaluangmasuk,
+                    'update'=>now()
+                ]
+            );
+        }
 
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('success', 'data berhasil ditambah');
     }
 
     public function deleteuangmasukpiutang($id){
@@ -98,7 +153,7 @@ class UangmasukController extends Controller
 
         $data->delete();
 
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil dihapus');
     }
 
     public function deleteuangmasukretail($id){
@@ -117,7 +172,7 @@ class UangmasukController extends Controller
 
         $data->delete();
 
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil dihapus');
     }
 
     public function edituangmasukpiutang(Request $request, $id){
@@ -128,16 +183,15 @@ class UangmasukController extends Controller
         ]);
 
         $uangmasukpiutang = uangmasukpiutang::find($id);
+        $total_uang_masuk = total_uang_masuk::first();
+
+        $totaluangmasuk = $total_uang_masuk->total_uang_masuk - $uangmasukpiutang->total_piutang + $request->input('total_piutang'); 
 
         $uangmasukpiutang->update([
             'tanggal'=>$request->input('tanggal_nota'),
             'keterangan'=>$request->input('keterangan'),
             'total_piutang'=>$request->input('total_piutang'),
         ]);
-
-        $total_uang_masuk = total_uang_masuk::first();
-
-        $totaluangmasuk = uangmasukpiutang::sum('total_piutang') + uangmasukretail::sum('jumlah');
 
         total_uang_masuk::updateOrCreate(
             ['id'=>1],
@@ -146,7 +200,7 @@ class UangmasukController extends Controller
                 'update'=>now()
             ]
         );
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('succsess', 'Data berhasil diedit');
     }
 
     public function edituangmasukretail(Request $request, $id){
@@ -158,16 +212,16 @@ class UangmasukController extends Controller
         $produk = produk::where('nama_produk', $request->input('nama_produk'))->first();
         $jumlah = $request->input('qty') * $produk->harga_satuan;
 
+        $total_uang_masuk = total_uang_masuk::first();
         $uangmasukretail = uangmasukretail::find($id);
+
+        $totaluangmasuk = $total_uang_masuk->total_uang_masuk - $uangmasukretail->jumlah + $jumlah; 
+
         $uangmasukretail->update([
             'qty'=>$request->input('qty'),
             'satuan'=>$request->input('satuan'),
             'jumlah'=>$jumlah,
         ]);
-
-        $total_uang_masuk = total_uang_masuk::first();
-
-        $totaluangmasuk = uangmasukpiutang::sum('total_piutang') + uangmasukretail::sum('jumlah');
 
         total_uang_masuk::updateOrCreate(
             ['id'=>1],
@@ -176,44 +230,43 @@ class UangmasukController extends Controller
                 'update'=>now()
             ]
         );
-        return redirect('user/manager/uang_masuk')->with('succsess', 'data berhasil ditambah');
+        return redirect('user/manager/uang_masuk')->with('succsess', 'Data berhasil diedit');
     }
 
-    public function indexowner(){
-        $retail = uangmasukretail::orderBy('tanggal', 'desc')->get();
-        $piutang = uangmasukpiutang::orderBy('tanggal', 'desc')->get();
-        $totaluangmasuk = total_uang_masuk::all();
-        $produk = produk::all();
-        $jumlahpiutang = uangmasukpiutang::sum('total_piutang');
-        $jumlahretail = uangmasukretail::sum('jumlah');
+    public function indexowner($startDate, $endDate){
+        // Validasi input startDate dan endDate
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->withErrors(['error' => 'Tanggal mulai dan akhir harus diisi.']);
+        }
+
+        // Pastikan startDate tidak lebih besar dari endDate
+        if (strtotime($startDate) > strtotime($endDate)) {
+            return redirect()->back()->withErrors(['error' => 'Tanggal mulai tidak boleh lebih besar dari tanggal akhir.']);
+        }
+
+        // Ambil data retail dan piutang antara startDate dan endDate
+        $retail = uangmasukretail::whereBetween('tanggal', [$startDate, $endDate])->orderBy('tanggal', 'desc')->get();
+        $piutang = uangmasukpiutang::whereBetween('tanggal', [$startDate, $endDate])->orderBy('tanggal', 'desc')->get();
+
+        $totaluangmasuk = total_uang_masuk::first();
+
+        $jumlahpiutang = uangmasukpiutang::whereBetween('tanggal', [$startDate, $endDate])->sum('total_piutang'); // Jumlah piutang antara startDate dan endDate
+        $jumlahretail = uangmasukretail::whereBetween('tanggal', [$startDate, $endDate])->sum('jumlah'); // Jumlah retail antara startDate dan endDate
         $piutangplusretail = $jumlahpiutang + $jumlahretail;
 
-        return view('owner.uangmasuk', compact('retail','piutang','totaluangmasuk','produk','jumlahpiutang', 'jumlahretail', 'startDate', 'endDate','piutangplusretail'));
+        return view('owner.uangmasuk', compact('retail', 'piutang', 'totaluangmasuk', 'jumlahpiutang', 'jumlahretail', 'startDate', 'endDate'));
     }
 
-    public function filter(Request $request){
+    public function filteruangmasuk(Request $request){
+        $request->validate([
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate',
+        ]);
+
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
 
-        $piutangQuery = uangmasukpiutang::orderBy('tanggal', 'desc');
-        $retailQuery = uangmasukretail::orderBy('tanggal', 'desc');
-
-        // Apply date filter if provided
-        if ($startDate && $endDate) {
-            $piutangQuery->whereBetween('tanggal', [$startDate, $endDate]);
-            $retailQuery->whereBetween('tanggal', [$startDate, $endDate]);
-        }
-
-
-        $piutang = $piutangQuery->get();
-        $retail = $retailQuery->get();
-        $totaluangmasuk = total_uang_masuk::all();
-        $produk = produk::all();
-        $jumlahpiutang = $piutang->sum('total_piutang');
-        $jumlahretail = $retail->sum('jumlah');
-        $piutangplusretail = $jumlahpiutang + $jumlahretail;
-
-        return view('owner.uangmasuk', compact('retail','piutang','totaluangmasuk','produk','jumlahpiutang', 'jumlahretail', 'startDate', 'endDate','piutangplusretail'));
+        return redirect("/user/owner/uangmasuk/$startDate/$endDate");
     }
 
     public function cetakuangmasuk($startDate, $endDate){
@@ -233,6 +286,6 @@ class UangmasukController extends Controller
         $totaluangmasuk = total_uang_masuk::all();
         $piutangplusretail = $jumlahpiutang + $jumlahretail;
 
-        return view('owner.cetakuangmasuk', compact('piutang', 'retail', 'jumlahpiutang', 'jumlahretail', 'totaluangmasuk', 'startDate', 'endDate', 'piutangplusretail'));
+        return view('cetak.cetakuangmasuk', compact('piutang', 'retail', 'jumlahpiutang', 'jumlahretail', 'totaluangmasuk', 'startDate', 'endDate', 'piutangplusretail'));
     }
 }

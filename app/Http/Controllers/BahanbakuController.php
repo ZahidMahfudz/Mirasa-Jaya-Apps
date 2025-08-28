@@ -15,13 +15,13 @@ class BahanbakuController extends Controller
         $bahanbaku = bahanbaku::where('jenis', 'bahan baku')->get();
         $bahanpenolong = bahanbaku::where('jenis', 'bahan penolong')->get();
         $kardus = bahanbaku::where('jenis', 'kardus')->get();
-        return view('manager.bahanbaku', compact('bahanbaku', 'bahanpenolong', 'kardus'));
+        return view('admin.bahanbaku', compact('bahanbaku', 'bahanpenolong', 'kardus'));
     }
 
     public function delete($id){
         $data = bahanbaku::find($id);
         $data->delete();
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil dihapus');
+        return redirect()->back()->with('success', 'data berhasil dihapus');
     }
 
     public function tambahbahanbaku(Request $request){
@@ -48,7 +48,7 @@ class BahanbakuController extends Controller
             'harga_persatuan'=>$request->input('harga_persatuan'),
             'harga_perkilo'=>$hargaperkilo
         ]);
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
+        return redirect()->back()->with('success', 'data berhasil di input');
     }
 
     public function tambahbahanpenolong(Request $request){
@@ -74,7 +74,7 @@ class BahanbakuController extends Controller
             'harga_persatuan'=>$request->input('harga_persatuan'),
             'harga_perkilo'=>$hargaperkilo
         ]);
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
+        return redirect()->back()->with('success', 'data berhasil di input');
     }
 
     public function tambahkardus(Request $request){
@@ -88,7 +88,7 @@ class BahanbakuController extends Controller
             'satuan'=>$request->input('satuan'),
             'harga_persatuan'=>$request->input('harga_persatuan'),
         ]);
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil di input');
+        return redirect()->back()->with('success', 'data berhasil di input');
     }
 
     public function editbahanbaku(Request $request, $id){
@@ -111,7 +111,7 @@ class BahanbakuController extends Controller
             "harga_perkilo"=>$hargaperkilo
         ]);
 
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil diedit');
+        return redirect()->back()->with('success', 'data berhasil diedit');
     }
 
     public function editkardus(Request $request, $id){
@@ -127,7 +127,7 @@ class BahanbakuController extends Controller
             'harga_persatuan'=>$request->input('harga_persatuan')
         ]);
 
-        return redirect('user/manager/harga_bahan_baku')->with('success', 'data berhasil diedit');
+        return redirect()->back()->with('success', 'data berhasil diedit');
     }
 
 }

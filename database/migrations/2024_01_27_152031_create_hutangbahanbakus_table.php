@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('hutangbahanbakus', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal');
+            $table->date('tanggal_lunas')->nullable();
             $table->string('nama_bahan');
             $table->integer('qty');
             $table->string('satuan');
             $table->integer('harga_satuan');
+            $table->integer('ppn')->nullable();
             $table->integer('jumlah');
             $table->string('supplier');
+            $table->enum('status', ['lunas', 'belum_lunas']);
             $table->timestamps();
         });
     }

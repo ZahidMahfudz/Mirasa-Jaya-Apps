@@ -33,6 +33,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('logo_perusahaan.png') }}">
   </head>
   <body class="text-center">
 
@@ -40,7 +41,7 @@
   <form action="" method="POST">
     @csrf
     <img class="mb-4" src="/logo_perusahaan.png" alt="" width="120" height="60">
-    <h1 class="h3 mb-3 fw-normal">Silahkan Masuk</h1>
+    <h1 class="h3 mb-3 fw-normal">Sistem Informasi Manajemen</h1>
     @if($errors->any())
         <div class="alert alert-danger">
             @foreach($errors->all() as $item)
@@ -48,6 +49,9 @@
             @endforeach
         </div>
     @endif
+    <div>
+      <p>Silahkan Masuk</p>
+    </div>
     <div class="form-floating">
       <input type="text" name="username" class="form-control" id="floatingInput" value="{{ old('username') }}" placeholder="example">
       <label for="floatingInput">Username</label>

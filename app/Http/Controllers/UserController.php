@@ -12,12 +12,18 @@ class UserController extends Controller
         echo "<a href='/logout'>Logout</a>";
     }
     function admin(){
-        return view('admin.layout');
+        return redirect('user/admin/KelolaAkun');
     }
     function manager(){
-        return view('manager.dashboard');
+        // return view('manager.dashboard');
+        return redirect('user/manager/resumeproduksi');
     }
     function owner(){
-        return view('owner.dashboard');
+        // return view('owner.dashboard');
+        return redirect('user/owner/laporanproduksi');
+    }
+
+    function pemasaran(){
+        return redirect('user/pemasaran/dasboard');
     }
 }

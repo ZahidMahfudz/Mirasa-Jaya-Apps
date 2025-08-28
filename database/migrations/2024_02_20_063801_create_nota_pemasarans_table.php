@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nota_pemasarans', function (Blueprint $table) {
-            $table->id();
+            $table->string('id_nota')->primary();
             $table->enum('jenis_nota', ['nota_cash', 'nota_noncash']);
             $table->date('tanggal');
             $table->string('nama_toko');
-            $table->integer('qty');
-            $table->string('nama_barang');
+            $table->enum('status', ['lunas', 'belum_lunas']);
+            $table->string('keterangan')->nullable();
+            $table->decimal('total_nota', 15, 2);
+            $table->string('oleh')->nullable();
+            $table->date('tanggal_lunas')->nullable();
             $table->timestamps();
         });
     }

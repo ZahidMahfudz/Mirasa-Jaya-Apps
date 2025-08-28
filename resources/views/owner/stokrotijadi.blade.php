@@ -1,6 +1,7 @@
-@extends('owner.layout')
-@section('main_content')
-    <h1>Stok roti jadi</h1>
+<x-layout-owner>
+    <x-slot:title>Stok Roti Jadi</x-slot>
+    <x-slot:tabs>Owner-Stok Roti Jadi</x-slot>
+
     <div class="card mt-2">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
@@ -9,10 +10,11 @@
                         <h5>Rincian Stok Roti Jadi</h5>
                     </div>
                     <div class="mt-3">
-                        <form action="filterstokrotijadi" method="GET">
+                        <form action="filterstokrotijadi" method="post">
+                            @csrf
                             <div class="row">
                                 <div class="col">
-                                    <p>periode</p>
+                                    <p>Tanggal</p>
                                 </div>
                                 <div class="col">
                                     {{-- <label for="endDate" class="form-label">Selesai:</label> --}}
@@ -27,7 +29,7 @@
                     </div>
                 </div>
                 <div class="mt-1">
-                    <a href="" onclick=" this.href='cetak-laporan-produksi/'+ document.getElementById('endDate').value " class="btn btn-secondary" target="_blank" >Cetak</a>
+                    <a href="" onclick=" this.href='cetak_stok_roti_jadi/'+ document.getElementById('endDate').value " class="btn btn-secondary" target="_blank" >Cetak</a>
                 </div>
             </div>
         </div>
@@ -35,29 +37,51 @@
             <table class="table table-bordered table-striped table-sm border border-dark align-middle">
                 <thead>
                     <th>Nama Produk</th>
-                    <th>Gudang</th>
-                    <th>SSS</th>
-                    <th>Total</th>
-                    <th>Harga Satuan</th>
-                    <th>Harga Total</th>
+                    <th style="width: 10%">Gudang</th>
+                    <th style="width: 10%">SSS</th>
+                     <th style="width: 10%">Total</th>
+                    <th style="width: 15%">Harga Satuan</th>
+                    <th style="width: 15%">Harga Total</th>
                 </thead>
                 <tbody>
-                    @foreach ($groupedData as $nama_produk => $data_per_produk)
+                    @php
+                        $totalGudang = 0;
+                        $totalSSS = 0;
+                        $grandTotal = 0;
+                        $grandHargaTotal = 0;
+                    @endphp
+                    @foreach ($dataStokRotiJadi as $item)
                         <tr>
-                            <td>{{ $nama_produk }}</td>
+                            <td>{{ $item->nama_produk }}</td>
+                            <td style="text-align: right;">{{ $item->sisa }}</td>
+                            <td style="text-align: right;">{{ $item->sss }}</td>
+                            <td style="text-align: right;">{{ $item->sss + $item->sisa }}</td>
+                            <td style="text-align: right;">{{ number_format($item->harga_satuan) }}</td>
+                            <td style="text-align: right;">{{ number_format($item->sisa * $item->harga_satuan) }}</td>
                             @php
-                                $data_tanggal = $data_per_produk->where('tanggal', $endDate)->first();
-                                $sisa = $data_tanggal ? $data_tanggal->sisa : 0;
+                                $totalGudang += $item->sisa;
+                                $totalSSS += $item->sss;
+                                $grandTotal += $item->sss + $item->sisa;
+                                $grandHargaTotal += $item->sisa * $item->harga_satuan;
                             @endphp
-                            <td>{{ $sisa != 0 ? $sisa : '' }}</td>
-                            <td>{{ $sss = 0 }}</td>
-                            <td>{{ $sisa + $sss }}</td>
-                            <td>{{ number_format($produk[$nama_produk] ?? 'N/A') }}</td>
-                            <td>{{ number_format(($produk[$nama_produk] ?? 0) * ($sisa + $sss)) }}</td>
                         </tr>
-                    @endforeach
+                        @endforeach
+                        <tr>
+                            <td style="text-align: right;"><b>Total</b></td>
+                            <td style="text-align: right;"><b>{{ $totalGudang }}</b></td>
+                            <td style="text-align: right;"><b>{{ $totalSSS }}</b></td>
+                            <td style="text-align: right;"><b>{{ $grandTotal }}</b></td>
+                            <td><b></b></td>
+                            <td style="text-align: right;"><b>{{ number_format($grandHargaTotal) }}</b></td>
+                        </tr>
                 </tbody>
             </table>
         </div>
     </div>
-@endsection
+</x-layout-owner>
+
+{{-- @extends('owner.layout')
+@section('main_content')
+    <h1>Stok roti jadi</h1>
+    
+@endsection --}}

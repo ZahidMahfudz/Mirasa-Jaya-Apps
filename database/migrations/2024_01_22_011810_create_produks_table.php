@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('produks', function (Blueprint $table) {
-            $table->id();
+            $table->string('id_produk')->primary(); // Set primary key sebagai string (jika menggunakan format khusus)
             $table->string('nama_produk');
             $table->integer('harga_satuan');
+            $table->string('jenis_kardus');
             $table->timestamps();
         });
     }

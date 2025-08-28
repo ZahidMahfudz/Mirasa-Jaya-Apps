@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\piutang;
 use App\Http\Requests\StorepiutangRequest;
 use App\Http\Requests\UpdatepiutangRequest;
+use App\Models\nota_pemasaran;
 use App\Models\total_piutang;
 use Illuminate\Http\Request;
 use App\Models\uangmasukpiutang;
@@ -18,10 +19,29 @@ class PiutangController extends Controller
      */
     public function index()
     {
-        $totalsby = Piutang::groupBy('oleh')->selectRaw('oleh, sum(total_piutang) as total')->get();
-        $piutang = piutang::orderBy('tanggal_piutang', 'desc')->get();
-        $total_piutang = total_piutang::all();
-        return view('manager.piutang', compact('piutang','total_piutang', 'totalsby'));
+        // $totalsby = Piutang::where('status', 'belum_lunas')->groupBy('oleh')->selectRaw('oleh, sum(total_piutang) as total')->get();
+        // $piutangbelumlunas = piutang::orderBy('tanggal_piutang', 'desc')->where('status', 'belum_lunas')->get();
+        // $piutanglunas = piutang::orderBy('tanggal_piutang', 'desc')->where('status', 'lunas')->get();
+        // $update = Piutang::orderBy('tanggal_piutang', 'desc')->value('tanggal_piutang');
+        // $total_piutang = piutang::where('status', 'belum_lunas')->sum('total_piutang');
+
+        $totalsby = nota_pemasaran::where('status', 'belum_lunas')->groupBy('oleh')->selectRaw('oleh, sum(total_nota) as total')->get();
+        $piutangbelumlunas = nota_pemasaran::orderBy('tanggal', 'desc')->where('status', 'belum_lunas')->with('item_nota')->get();
+        $piutanglunas = nota_pemasaran::orderBy('tanggal', 'desc')->where('status', 'lunas')->with('item_nota')->get();
+        $update = nota_pemasaran::orderBy('tanggal', 'desc')->value('tanggal');
+        $total_piutang = nota_pemasaran::where('status', 'belum_lunas')->sum('total_nota');
+
+        if(request()->is('user/owner/cetakpiutang')){
+            return view('cetak.cetakpiutang', compact('piutangbelumlunas','total_piutang', 'totalsby', 'update'));
+        }
+
+        if (auth()->user()->role === 'manager') {
+            return view('manager.piutang', compact('piutangbelumlunas', 'piutanglunas', 'total_piutang', 'totalsby', 'update'));
+        } elseif (auth()->user()->role === 'owner') {
+            return view('owner.piutang', compact('piutangbelumlunas', 'piutanglunas', 'total_piutang', 'totalsby', 'update'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     public function tambahpiutang(Request $request){
@@ -40,6 +60,7 @@ class PiutangController extends Controller
             'Keterangan'=>$request->input('keterangan'),
             'total_piutang'=>$request->input('total_piutang'),
             'oleh'=>$request->input('oleh'),
+            'status' => 'belum_lunas'
         ]);
 
         $total_piutang = piutang::sum('total_piutang');
@@ -86,69 +107,54 @@ class PiutangController extends Controller
         return redirect('user/manager/piutang')->with('success', 'data berhasil diedit');
     }
 
+    public function piutanglunas($id){
+        //cari data piutang 
+        $dataPiutang = piutang::findorfail($id);
 
-    public function piutanglunas($id)
-    {
-        // Cari data piutang
-        $dataPiutang = Piutang::findOrFail($id);
-
-        // Simpan total piutang sebelum penghapusan data
-        $totalPiutang = total_piutang::first();
-        $totalpiutang = Piutang::sum('total_piutang');
-
-        // Simpan total uang masuk sebelum penambahan
-        $totalUangMasuk = total_uang_masuk::find(1);
-        $totaluangmasuk = UangMasukPiutang::sum('total_piutang');
-
-        // Buat entri baru di tabel uangmasukpiutangs
+        //Buat entri baru di tabel uangmasukpiutangs
         $uangMasukPiutang = UangMasukPiutang::create([
-            'tanggal' => now(),
+            'tanggal' => $dataPiutang->tanggal_piutang,
             'tanggal_lunas' => now(),
             'nama_toko' => $dataPiutang->nama_toko,
             'keterangan' => 'piutang :'.$dataPiutang->tanggal_piutang . ' lunas: ' . now(),
             'total_piutang' => $dataPiutang->total_piutang,
         ]);
 
-        // Perbarui total uang masuk
-        if (!$totalUangMasuk) {
+        //perbarui data ditabel piutang
+        $dataPiutang->update([
+            'tanggal_lunas' => now(),
+            'status'=> 'lunas',
+            'Keterangan' => 'lunas pada:'.now()
+        ]);
+
+        $data_total_uang_masuk = total_uang_masuk::first();
+        if(!$data_total_uang_masuk){
             total_uang_masuk::create([
-                'total_uang_masuk' => $totaluangmasuk,
-                'update' => now()
-            ]);
-        } else {
-            $totalUangMasuk->update([
-                'total_uang_masuk' => $totaluangmasuk,
+                'total_uang_masuk' => $dataPiutang->total_piutang,
                 'update' => now()
             ]);
         }
-        $total_piutang = $totalPiutang->total_piutang - $dataPiutang->total_piutang;
-
-        total_piutang::updateOrCreate(
-            ['id'=>1],
-            [
-                'total_piutang'=>$total_piutang,
-                'update'=>now()
-            ]
-        );
-
-        // Hapus entri piutang
-        $dataPiutang->delete();
+        else{
+            $totaluangmasuk = $dataPiutang->total_piutang + $data_total_uang_masuk->total_uang_masuk;
+    
+            total_uang_masuk::updateOrCreate(
+                ['id'=>1],
+                [
+                    'total_uang_masuk'=>$totaluangmasuk,
+                    'update'=>now()
+                ]
+            );
+        }
 
         return redirect('user/manager/piutang')->with('success', 'Piutang dilunasi');
     }
 
-    public function indexowner(){
-        $totalsby = Piutang::groupBy('oleh')->selectRaw('oleh, sum(total_piutang) as total')->get();
-        $piutang = piutang::orderBy('tanggal_piutang', 'desc')->get();
-        $total_piutang = total_piutang::all();
-        return view('owner.piutang', compact('piutang','total_piutang', 'totalsby'));
-    }
+    public function hapuspiutang($id){
+        $data = piutang::find($id);
 
-    public function cetakpiutang(){
-        $totalsby = Piutang::groupBy('oleh')->selectRaw('oleh, sum(total_piutang) as total')->get();
-        $piutang = piutang::orderBy('tanggal_piutang', 'desc')->get();
-        $total_piutang = total_piutang::all();
-        return view('owner.cetakpiutang', compact('piutang','total_piutang', 'totalsby'));
+        $data->delete();
+
+        return redirect('user/manager/piutang')->with('success', 'Piutang dihapus');
     }
 
 }

@@ -1,116 +1,67 @@
-@extends('manager.layout')
-@section('main_content')
-    <h1>Piutang Usaha</h1>
-    <div>
-        <p>
-            Update :
-            @foreach ($total_piutang as $total_piutang)
-                {{ Carbon\Carbon::parse($total_piutang->update)->format('d F Y') }}
+<x-layout-manager>
+    <x-slot:title>Piutang Usaha</x-slot>
+    <x-slot:tabs>Manager-Piutang Usaha</x-slot>
 
-        </p>
-    </div>
-
-    <div>
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tambahPiutang">Tambah Piutang</button>
-    </div>
-
-    <div class="card mt-3">
+    <div class="card mt-2">
         <div class="card-header">
-            <p><b>Total Piutang :
-                    {{ number_format($total_piutang->total_piutang) }}
-            @endforeach
-            </b></p>
+            {{-- @foreach ($update as $totpiutang)
+                <p style="margin-bottom: 0;"><b>Update : {{ \Carbon\Carbon::parse($totpiutang->update)->translatedFormat('d F Y') }} </b></p>
+                <p><b></b></p>
+            @endforeach --}}
+            <p style="margin-bottom: 0;"><b>Update : {{ \Carbon\Carbon::parse($update)->translatedFormat('d F Y') }}</b></p>
         </div>
         <div class="card-body">
+            <p>Piutang Masih berlaku : </p>
             <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                <thead>
+                <thead class="text-center">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Toko</th>
-                        <th>Tanggal Piutang</th>
-                        <th>Keterangan</th>
-                        <th>Total Piutang</th>
-                        <th>Pelunasan</th>
-                        <th>Aksi</th>
+                        <th style="width: 2%; text-align: center; vertical-align: middle;" rowspan="2">No</th>
+                        <th style="width: 20%; vertical-align: middle;" rowspan="2">Nama Toko</th>
+                        <th style="width: 5%; vertical-align: middle;" rowspan="2">Tanggal Piutang</th>
+                        <th style="width: 15%; vertical-align: middle;" rowspan="2">Keterangan</th>
+                        <th style="width: 30%; text-align: center; vertical-align: middle;" colspan="4">Item Nota</th>
+                        <th style="width: 7%; text-align: right; vertical-align: middle;" rowspan="2">Total Piutang</th>
+                        <th style="width: 5%; text-align: center; vertical-align: middle;" rowspan="2">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th>Nama Produk</th>
+                        <th>Qty</th>
+                        <th>Harga Satuan</th>
+                        <th>Jumlah</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($piutang as $index => $item)
+                    @foreach ($piutangbelumlunas as $index => $item)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->nama_toko }}</td>
-                            <td>{{ Carbon\Carbon::parse($item->tanggal_piutang)->format('d F Y') }}</td>
-                            <td>{{ $item->Keterangan }}</td>
-                            <td>{{ number_format($item->total_piutang) }}</td>
-                            <td>
-                                <a href="/piutanglunas/{{ $item->id }}" class="btn btn-danger""> Belum Lunas</a>
-                            </td>
-                            <td>
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editPiutang-{{ $item->id }}">Edit</button>
-                            </td>
+                            <td style="text-align: center;" rowspan="{{ count($item->item_nota) + 1 }}">{{ $index + 1 }}</td>
+                            <td rowspan="{{ count($item->item_nota) + 1 }}">{{ $item->nama_toko }}</td>
+                            <td style="text-align: center;" rowspan="{{ count($item->item_nota) + 1 }}">{{ Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
+                            <td rowspan="{{ count($item->item_nota) + 1 }}">{{ $item->Keterangan }}</td>
+                            @foreach ($item->item_nota as $key => $item_nota)
+                                <tr>
+                                    <td>{{ $item_nota->nama_produk }}</td>
+                                    <td class="text-end">{{ number_format($item_nota->qty, 0, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format($item_nota->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format($item_nota->qty * $item_nota->harga_satuan, 0, ',', '.') }}</td>
+                                    @if ($key === 0)
+                                        <td class="text-end" rowspan="{{ count($item->item_nota) }}">{{ number_format($item->total_nota, 0, ',', '.') }}</td>
+                                        <td class="text-center" rowspan="{{ count($item->item_nota) }}">
+                                            <a href="/piutanglunas/{{ $item->id_nota }}" class="btn btn-sm btn-success">Lunas</a>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
                         </tr>
-                        <div class="modal fade" id="editPiutang-{{ $item->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Edit Piutang</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="editPiutang/{{ $item->id }}" method="post">
-                                            @csrf
-                                            <div class="mt-2">
-                                                <label for="nama_toko" class="form-label">Nama Toko :</label>
-                                                <input type="text" name="nama_toko" id="nama_toko" class="form-control" value="{{ $item->nama_toko }}" disabled>
-                                            </div>
-                                            <div class="mt-2">
-                                                <label for="tanggal_piutang" class="form-label">Tanggal Piutang:</label>
-                                                <input type="Date" name="tanggal_piutang" id="tanggal_piutang" class="form-control  @error('tanggal_piutang') is-invalid @enderror" value="{{ old('tanggal_piutang', $item->tanggal_piutang) }}">
-                                                @error('tanggal_piutang')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="mt-2">
-                                                <label for="total_piutang" class="form-label">Total Piutang:</label>
-                                                <input type="number" name="total_piutang" id="total_piutang" class="form-control  @error('total_piutang') is-invalid @enderror" value="{{ old('total_piutang', $item->total_piutang) }}">
-                                                @error('total_piutang')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="mt-2">
-                                                <label for="keterangan" class="form-label">Keterangan :</label>
-                                                <input type="text" name="keterangan" id="keterangan" class="form-control  @error('keterangan') is-invalid @enderror" value="{{ old('keterangan', $item->Keterangan) }}">
-                                                @error('keterangan')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="mt-2">
-                                                <label for="oleh" class="form-label">Oleh :</label>
-                                                <input type="text" name="oleh" id="oleh" class="form-control  @error('oleh') is-invalid @enderror" value="{{ old('oleh', $item->oleh) }}">
-                                                @error('oleh')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Edit</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <p><b>Pemberi Piutang Usaha</b></p>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped table-sm border border-dark align-middle w-50">
+                    @endforeach
+                        <tr>
+                            <td colspan="8" style="text-align: right;"><b>Total Piutang :</b></td>
+                            <td style="text-align: right;">Rp.{{ number_format($total_piutang) }}</td>
+                            <td>-</td>
+                        </tr>
+                </tbody>
+            </table>
+                <p>Pemberi Piutang :</p>
+                <table class="table table-bordered table-striped table-sm border border-dark align-middle">
                 <thead>
                     <tr>
                         <th>Nama</th>
@@ -118,68 +69,24 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $totalPiutang = 0;
+                    @endphp
                     @foreach ($totalsby as $total)
+                        @php
+                            $totalPiutang += $total->total;
+                        @endphp
                         <tr>
                             <td>{{ $total->oleh }}</td>
-                            <td>{{ number_format($total->total) }}</td>
+                            <td style="text-align: right;">{{ number_format($total->total) }}</td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td style="text-align: right;"><b>Total Pemberi Piutang :</b></td>
+                        <td style="text-align: right;">Rp.{{ number_format($totalPiutang) }}</td>
+                    </tr>
                 </tbody>
             </table>
-        </div>
+            </div>
     </div>
-
-    <div class="modal fade" id="tambahPiutang" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Tambah Piutang</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/user/manager/tambahpiutang" method="post">
-                            @csrf
-                            <div class="mt-2">
-                                <label for="nama_toko" class="form-label">Nama Toko :</label>
-                                <input type="text" name="nama_toko" id="nama_toko" class="form-control  @error('nama_toko') is-invalid @enderror" value="{{ old('nama_toko') }}">
-                                @error('nama_toko')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="mt-2">
-                                <label for="tanggal_piutang" class="form-label">Tanggal Piutang:</label>
-                                <input type="Date" name="tanggal_piutang" id="tanggal_piutang" class="form-control  @error('tanggal_piutang') is-invalid @enderror" value="{{ old('tanggal_piutang') }}">
-                                @error('tanggal_piutang')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="mt-2">
-                                <label for="total_piutang" class="form-label">Total Piutang:</label>
-                                <input type="number" name="total_piutang" id="total_piutang" class="form-control  @error('total_piutang') is-invalid @enderror" value="{{ old('total_piutang') }}">
-                                @error('total_piutang')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="mt-2">
-                                <label for="keterangan" class="form-label">Keterangan :</label>
-                                <input type="text" name="keterangan" id="keterangan" class="form-control  @error('keterangan') is-invalid @enderror" value="{{ old('keterangan') }}">
-                                @error('keterangan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="mt-2">
-                                <label for="oleh" class="form-label">Oleh :</label>
-                                <input type="text" name="oleh" id="oleh" class="form-control  @error('oleh') is-invalid @enderror" value="{{ old('oleh') }}">
-                                @error('oleh')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Tambah</button>
-                            </div>
-                    </form>
-                </div>
-        </div>
-    </div>
-@endsection
+</x-layout-manager>

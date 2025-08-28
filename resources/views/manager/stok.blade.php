@@ -1,9 +1,6 @@
-<head>
-    <title>Mirasa Jaya - Stok</title>
-</head>
-@extends('manager.layout')
-@section('main_content')
-    <h1>Stok Bahan Baku dan Penolong</h1>
+<x-layout-manager>
+    <x-slot:title>Stok Bahan Baku, penolong, dan WIP</x-slot>
+    <x-slot:tabs>Manager-stok</x-slot>
 
     <div class="mt-2">
         <a href="generatestokbahanbaku" class="btn btn-outline-primary">Generate Stok Bahan Baku dan Penolong </a>
@@ -12,10 +9,6 @@
     <div class="mt-3">
         <div class="card">
             <div class="card-header">
-                <div>
-                    <h3>Rincian Stok Bahan Baku, Bahan Penolong, dan WIP</h3>
-                    <strong>Tanggal : {{ $tanggal }}</strong>
-                </div>
                 <div class="alert alert-warning mt-2" role="alert">
                     <p style="margin-bottom: 0;"><b>PENTING!</b></p>
                     <ul style="margin-top: 0; margin-bottom: 0;">
@@ -38,6 +31,10 @@
                 </div> --}}
             </div>
             <div class="card-body">
+                <div class="mb-3">
+                    <strong>Tanggal : {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y')}}</strong>
+                </div>
+                
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="bahanbaku-tab" data-bs-toggle="tab" data-bs-target="#bahanbaku"
@@ -68,7 +65,7 @@
                                             <th style="text-align: center;">Total Stok Bahan Baku</th>
                                             <th rowspan="2" style="text-align: center; vertical-align: middle;">Harga Satuan</th>
                                             <th rowspan="2" style="text-align: center; vertical-align: middle;">Total</th>
-                                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Aksi</th>
+                                            <th rowspan="2" style="text-align: center; vertical-align: middle; width:5%">Aksi</th>
                                         </tr>
                                         <tr>
                                             <th style="text-align: center;">(zak)</th>
@@ -106,13 +103,13 @@
                                             <tr>
                                                 <td>{{ $bahanbaku->nama_bahan }}</td>
                                                 <td>{{ $satuanhargasat->satuan }} ({{ $satuanhargasat->banyak_satuan }} {{ $satuanhargasat->jenis_satuan }})</td>
-                                                <td>{{ $gudang }}</td>
-                                                <td>{{ $sisaResep }}</td>
-                                                <td>{{ $totalBahanBaku }}</td>
-                                                <td>{{ $wip }}</td>
-                                                <td>{{ $totalStokBahanBaku }}</td>
-                                                <td>{{ number_format($hargaSatuan) }}</td>
-                                                <td>{{ number_format($totalHarga) }}</td>
+                                                <td style="text-align: right;">{{ $gudang }}</td>
+                                                <td style="text-align: right;">{{ $sisaResep }}</td>
+                                                <td style="text-align: right;">{{ $totalBahanBaku }}</td>
+                                                <td style="text-align: right;">{{ $wip }}</td>
+                                                <td style="text-align: right;">{{ $totalStokBahanBaku }}</td>
+                                                <td style="text-align: right;">{{ number_format($hargaSatuan) }}</td>
+                                                <td style="text-align: right;">{{ number_format($totalHarga) }}</td>
                                                 <td style="text-align: center;">
                                                     <!-- Tombol atau tautan untuk memicu modal -->
                                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal{{ $bahanbaku->id}}">Edit</button>
@@ -122,7 +119,7 @@
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" Label">Edit Stok bahan baku</h5>
+                                                                <h5 class="modal-title">Edit Stok bahan baku</h5>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <!-- Form untuk mengedit in dan out -->
@@ -163,7 +160,7 @@
                                         @endforeach
                                         <tr>
                                             <td colspan="8" style="text-align: right;"><strong>Total</strong></td>
-                                            <td colspan="2">{{ number_format($sumtotalbahanbaku) }}</td>
+                                            <td style="text-align: right;"><b>Rp.{{ number_format($sumtotalbahanbaku) }}</b></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -181,7 +178,7 @@
                                             <th style="text-align: center;">Jumlah</th>
                                             <th style="text-align: center;">Harga Satuan</th>
                                             <th style="text-align: center;">Total</th>
-                                            <th style="text-align: center;">Aksi</th>
+                                            <th style="text-align: center; width:5%;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -195,23 +192,25 @@
                                                 @php
                                                     $jumlah = $stokbp->firstWhere('nama_bahan', $bahanpenolong->nama_bahan);
                                                 @endphp
-                                                @if ($bahanpenolong)
-                                                    <td>{{ $jumlah->jumlah }}</td>
-                                                    <td>{{ number_format($bahanpenolong->harga_persatuan) }}</td>
+                                                @if ($bahanpenolong && $jumlah)
+                                                    <td style="text-align: right;">{{ $jumlah->jumlah }}</td>
+                                                    <td style="text-align: right;">{{ number_format($bahanpenolong->harga_persatuan) }}</td>
                                                     @php
                                                         $totalbp = $jumlah->jumlah * $bahanpenolong->harga_persatuan;
                                                         $sumtotalbahanpenolong += $totalbp
                                                     @endphp
-                                                    <td>{{ number_format($totalbp) }}</td>
+                                                    <td style="text-align: right;">{{ number_format($totalbp) }}</td>
                                                     <td style="text-align: center;">
-                                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal{{ $bahanpenolong->id}}">Edit</button>
+                                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editbp{{ $bahanpenolong->id }}">Edit</button>
                                                     </td>
-
-                                                    <div class="modal fade" id="editModal{{ $bahanpenolong->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="editbp{{ $bahanpenolong->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" Label">Edit Stok bahan penolong</h5>
+                                                                    <h5 class="modal-title">Edit Stok Bahan Penolong</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <!-- Form untuk mengedit in dan out -->
@@ -227,8 +226,8 @@
                                                                         </div>
                                                                         <div class="mt-2">
                                                                             <label for="jumlah" class="form-label">Jumlah:</label>
-                                                                            <input type="number" name="jumlah" step="0.01" id="jumlah" class="form-control @error('jumlah') is-invalid @enderror" value="{{ old('jumlah', $jumlah->jumlah ) }}">
-                                                                            @error('in')
+                                                                            <input type="number" name="jumlah" step="0.01" id="jumlah" class="form-control @error('jumlah') is-invalid @enderror" value="{{ old('jumlah', $jumlah->jumlah) }}">
+                                                                            @error('jumlah')
                                                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                                             @enderror
                                                                         </div>
@@ -240,7 +239,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div>                                                    
                                                 @else
                                                     <td colspan="5">Data bahan Penolong Tidak Ditemukan</td>
                                                 @endif
@@ -248,7 +247,7 @@
                                         @endforeach
                                         <tr>
                                             <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
-                                            <td colspan="2">{{ number_format($sumtotalbahanpenolong) }}</td>
+                                            <td style="text-align: right;"><b>Rp.{{ number_format($sumtotalbahanpenolong) }}</b></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -264,8 +263,8 @@
                                             <th style="text-align: center;">No</th>
                                             <th style="text-align: center;">Resep</th>
                                             <th style="text-align: center;">Lini Produksi</th>
-                                            <th style="text-align: center;">Jumlah Resep</th>
-                                            <th style="text-align: center;">Aksi</th>
+                                            <th style="text-align: center; width:5%;">Jumlah Resep</th>
+                                            <th style="text-align: center; width:5%;">Aksi</th>
                                             <th style="text-align: center;">Bahan</th>
                                             <th style="text-align: center;">Berat (gr)</th>
                                             <th style="text-align: center;">Berat (kg)</th>
@@ -280,15 +279,15 @@
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $loop->parent->iteration }}</td>
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->resep->nama_resep }}</td>
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->resep->lini_produksi }}</td>
-                                                        <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->jumlah_resep }}</td>
+                                                        <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}" style="text-align: center;">{{ $rekapResep->jumlah_resep }}</td>
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}" style="text-align: center;">
                                                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editwip{{ $rekapResep->id}}">Edit</button>
                                                         </td>
                                                     @endif
                                                     <td>{{ $bahanResep->nama_bahan }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_gr * $rekapResep->jumlah_resep }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_kg * $rekapResep->jumlah_resep }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_zak * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_gr * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_kg * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_zak * $rekapResep->jumlah_resep }}</td>
                                                 </tr>
 
                                                 <div class="modal fade" id="editwip{{ $rekapResep->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editwipLabel{{ $rekapResep->id }}" aria-hidden="true">
@@ -334,10 +333,26 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <strong>Total Stok Bahan Baku dan Kardus : {{ number_format($sumtotalbahanbaku + $sumtotalbahanpenolong) }}</strong>
+                <div>
+                    <table class="table table-bordered table-striped table-sm border border-dark align-middle">
+                        <tr>
+                            <th style="width: 80%;">Total</th>
+                            <th style="text-align: right;">Rp.{{ number_format($sumtotalbahanbaku + $sumtotalbahanpenolong) }}</th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-@endsection
+</x-layout-manager>
+
+
+{{-- <head>
+    <title>Mirasa Jaya - Stok</title>
+</head>
+@extends('manager.layout')
+@section('main_content')
+    <h1>Stok Bahan Baku dan Penolong</h1>
+
+    
+@endsection --}}

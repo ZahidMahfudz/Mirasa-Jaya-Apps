@@ -13,4 +13,9 @@ class drop_out extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function ListDropOut()
+    {
+        return $this->hasMany(ListDropOut::class);
+    }
 }

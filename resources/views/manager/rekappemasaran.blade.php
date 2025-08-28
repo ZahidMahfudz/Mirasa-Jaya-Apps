@@ -1,483 +1,205 @@
-<head>
-    <title>Mirasa Jaya - Rekap Pemasaran</title>
-</head>
-
-@extends('manager.layout')
-@section('main_content')
-    <h1>Rekapitulasi Pemasaran</h1>
-
-    <div class="mt-2">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#tambahNota">Tambah
-            Nota</button>
-    </div>
-
-    <div class="modal fade" id="tambahNota" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Tambah Nota</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/user/manager/tambahNota" method="POST">
-                        @csrf
-                        <div>
-                            <label for="jenis_nota">Jenis Nota</label>
-                            <select name="jenis_nota" id="jenis_nota" class="form-select" required>
-                                <option selected>Pilih Jenis Nota</option>
-                                <option value="nota_cash">Cash</option>
-                                <option value="nota_noncash">Non Cash</option>
-                            </select>
-                        </div>
-                        <div class="mt-2">
-                            <label for="tanggal_Nota" class="form-label">Tanggal Nota:</label>
-                            <input type="date" name="tanggal_Nota" id="tanggal_Nota"
-                                class="form-control  @error('tanggal_Nota') is-invalid @enderror"
-                                value="{{ old('tanggal_Nota') }}" required>
-                            @error('tanggal_Nota')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mt-2">
-                            <label for="nama_toko" class="form-label">Nama Toko:</label>
-                            <input type="text" name="nama_toko" id="nama_toko"
-                                class="form-control  @error('nama_toko') is-invalid @enderror"
-                                value="{{ old('nama_toko') }}" required>
-                            @error('nama_toko')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mt-2">
-                            <label for="QTY" class="form-label">QTY:</label>
-                            <input type="number" name="QTY" id="QTY"
-                                class="form-control  @error('QTY') is-invalid @enderror" value="{{ old('QTY') }}"
-                                required>
-                            @error('QTY')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="nama_produk_nota" class="form-label">Nama Barang :</label>
-                            <select name="nama_produk_nota" id="nama_produk_nota" class="form-select" required>
-                                <option selected>Pilih Produk</option>
-                                @foreach ($produks as $item)
-                                    <option value="{{ $item->nama_produk }}">{{ $item->nama_produk }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="modal-footer mt-4">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Tambah</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<x-layout-manager>
+    <x-slot:title>Rekapitulasi Pemasaran</x-slot>
+    <x-slot:tabs>Manager-Rekap Pemasaran</x-slot>
 
     <div class="card mt-3">
         <div class="card-header">
             <div>
-                <p><b>Filter Penjualan</b></p>
+                <strong>Rekapitulasi Penjualan periode {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</strong>
             </div>
-            <div>
-                <form action="filterrekappemasaran" method="GET">
-                    <div class="row">
-                        {{-- <div class="col-sm-1">
-                            <p>Mulai : </p>
-                        </div> --}}
-                        <div class="col-sm">
-                            {{-- <label for="startDate" class="form-label">Mulai:</label> --}}
-                            <input type="date" class="form-control" id="startDate" name="startDate"
-                                value="{{ $startDate ?? '' }}" placeholder="mulai">
-                        </div>
-                        <div class="col-sm-1 text-center">
-                            <p>s/d</p>
-                        </div>
-                        <div class="col-sm">
-                            {{-- <label for="endDate" class="form-label">Selesai:</label> --}}
-                            <input type="date" class="form-control" id="endDate" name="endDate"
-                                value="{{ $endDate ?? '' }}" placeholder="selesai">
-                        </div>
-                        <div class="col-sm">
-                            <label for="submit" class="form-label"></label>
-                            <button type="submit" class="btn btn-primary" name="submit" id="submit">Filter</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
         </div>
         <div class="card-body">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" id="rekapTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
-                        data-bs-target="#laporan_penjualan" type="button" role="tab"
-                        aria-controls="laporan_penjualan" aria-selected="false">Laporan Penjualan</button>
+                    <button class="nav-link active" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab" aria-controls="weekly" aria-selected="true">Rekapitulasi Mingguan</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#nota_cash"
-                        type="button" role="tab" aria-controls="nota_cash" aria-selected="false">Nota Cash</button>
+                    <button class="nav-link" id="cash-tab" data-bs-toggle="tab" data-bs-target="#cash" type="button" role="tab" aria-controls="cash" aria-selected="false">Nota Cash</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#nota_noncash"
-                        type="button" role="tab" aria-controls="nota_noncash" aria-selected="false">Nota Non
-                        Cash</button>
+                    <button class="nav-link" id="non-cash-tab" data-bs-toggle="tab" data-bs-target="#non-cash" type="button" role="tab" aria-controls="non-cash" aria-selected="false">Nota Non Cash</button>
                 </li>
             </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="laporan_penjualan" role="tabpanel"
-                    aria-labelledby="laporan_penjualan-tab">
-                    <div class="mt-3">
-                        <div class="alert alert-warning mt-2" role="alert">
-                            <p style="margin-bottom: 0;"><b>PENTING!</b></p>
-                            <ul style="margin-bottom: 0;">
-                                <li>Untuk mengubah Drop Out, silakan edit pada Resume Produksi bagian out.</li>
-                                <li>Untuk penambahan nota, dilakukan setiap hari Sabtu untuk mencegah terjadinya kesalahan data.</li>
-                                <li>Nota ditambahkan secara urut sesuai tanggal dari 6 hari ke belakang.</li>
-                            </ul>
-                        </div>
-                        <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                            <thead>
+            <div class="tab-content mt-3" id="rekapTabsContent">
+                <div class="tab-pane fade show active" id="weekly" role="tabpanel" aria-labelledby="weekly-tab">
+                    <table class="table table-bordered table-sm">
+                        <thead class="table-light text-center align-middle">
+                            <tr>
+                                <th rowspan="2">No</th>
+                                <th rowspan="2">Nama Produk</th>
+                                <th rowspan="2">SSS {{ \Carbon\Carbon::parse($startDate)->format('d/m') }}</th>
+                                <th colspan="{{ count($tanggalPeriode) }}">Drop Out Produk</th>
+                                <th rowspan="2">Jumlah</th>
+                                <th rowspan="2">Nota Cash</th>
+                                <th rowspan="2">Nota Non Cash</th>
+                                <th rowspan="2">SSS {{ \Carbon\Carbon::parse($endDate)->format('d/m') }}</th>
+                            </tr>
+                            <tr>
+                                @foreach ($tanggalPeriode as $tanggal)
+                                    <th>{{ \Carbon\Carbon::parse($tanggal)->format('d/m') }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $totalSSSAwal = 0;
+                                $totalDropOutPerTanggal = array_fill_keys(collect($tanggalPeriode)->map(fn($tanggal) => \Carbon\Carbon::parse($tanggal)->toDateString())->toArray(), 0);
+                                $totalDropOut = 0;
+                                $totalNotaCash = 0;
+                                $totalNotaNonCash = 0;
+                                $totalSSSAkhir = 0;
+                            @endphp
+                            @foreach ($data as $i => $item)
+                            <tr>
+                                <td class="text-center">{{ $i + 1 }}</td>
+                                <td class="text-start">{{ $item['nama_produk'] }}</td>
+                                <td class="text-end">{{ number_format($item['sss_awal'], 0, ',', '.') }}</td>
+                                @php
+                                    $totalSSSAwal += $item['sss_awal'];
+                                @endphp
+                                @foreach ($tanggalPeriode as $tanggal)
+                                    @php
+                                        $dropOut = $item['dropout_per_tanggal'][$tanggal->toDateString()] ?? 0;
+                                        $totalDropOutPerTanggal[$tanggal->toDateString()] += $dropOut;
+                                    @endphp
+                                    <td class="text-end">{{ number_format($dropOut, 0, ',', '.') }}</td>
+                                @endforeach
+                                <td class="text-end">{{ number_format($item['total_dropout'], 0, ',', '.') }}</td>
+                                <td class="text-end">{{ number_format($item['nota_cash'], 0, ',', '.') }}</td>
+                                <td class="text-end">{{ number_format($item['nota_noncash'], 0, ',', '.') }}</td>
+                                <td class="text-end">{{ number_format($item['sss_akhir'], 0, ',', '.') }}</td>
+                                @php
+                                    $totalDropOut += $item['total_dropout'];
+                                    $totalNotaCash += $item['nota_cash'];
+                                    $totalNotaNonCash += $item['nota_noncash'];
+                                    $totalSSSAkhir += $item['sss_akhir'];
+                                @endphp
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="text-end">Total</th>
+                                <th class="text-end">{{ number_format($totalSSSAwal, 0, ',', '.') }}</th>
+                                @foreach ($tanggalPeriode as $tanggal)
+                                    <th class="text-end">{{ number_format($totalDropOutPerTanggal[$tanggal->toDateString()], 0, ',', '.') }}</th>
+                                @endforeach
+                                <th class="text-end">{{ number_format($totalDropOut, 0, ',', '.') }}</th>
+                                <th class="text-end">{{ number_format($totalNotaCash, 0, ',', '.') }}</th>
+                                <th class="text-end">{{ number_format($totalNotaNonCash, 0, ',', '.') }}</th>
+                                <th class="text-end">{{ number_format($totalSSSAkhir, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="cash" role="tabpanel" aria-labelledby="cash-tab">
+                    <div>
+                        <h4>Nota Cash</h4>
+                        <p>Periode {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</p>
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-striped table-sm border border-dark align-middle mt-3">
+                            <thead class="text-center align-middle">
                                 <tr>
-                                    <th rowspan="2" style="text-align: center; vertical-align: middle;">Nama Produk
-                                    </th>
-                                    <th style="text-align: center;">SSS</th>
-                                    <th colspan="{{ count($uniqueDates) }}" style="text-align: center;">Drop Out</th>
-                                    <th rowspan="2" style="text-align: center; vertical-align: middle;">Total</th>
-                                    <th rowspan="2" style="text-align: center; vertical-align: middle;">Nota Cash</th>
-                                    <th rowspan="2" style="text-align: center; vertical-align: middle;">Nota Non Cash
-                                    </th>
-                                    <th style="text-align: center;">SSS</th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align: center;">{{ $startDate }}</th>
-                                    @foreach ($uniqueDates as $tanggal)
-                                        <th style="text-align: center;">{{ $tanggal }}</th>
-                                    @endforeach
-                                    <th style="text-align: center;">{{ $endDate }}</th>
+                                    <th style="width: 3%;">No</th>
+                                    <th style="width: 40%;">Nama Toko</th>
+                                    <th style="width: 10%;">Tanggal</th>
+                                    <th style="width: 5%;">Jumlah</th>
+                                    <th style="width: 25%;">Nama Produk</th>
+                                    <th style="width: 15%;">Oleh</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $sss = 0;
-                                    $grandtotalproduk = 0;
-                                    $grandtotalsssstart = 0;
-                                    $grandtotalsssend = 0;
-                                    $total_cash = 0;
-                                    $total_non_cash = 0;
-                                @endphp
-                                @foreach ($groupedData as $nama_produk => $data_per_produk)
+                                @if($notaCash->isEmpty())
                                     <tr>
-                                        <td>{{ $nama_produk }}</td>
-                                        @php
-                                            $total_produk = 0;
-                                            $total_out = 0;
-                                            $start_sss = 0;
-                                            $end_sss = 0;
-                                        @endphp
-                                        @foreach ($sssstart as $start)
-                                            @if ($start->nama_produk == $nama_produk)
-                                                <td>{{ $start->sss }}</td>
-                                                @php
-                                                    $start_sss = $start->sss;
-                                                    $grandtotalsssstart += $start_sss;
-                                                @endphp
-                                            @endif
-                                        @endforeach
-                                        @foreach ($uniqueDates as $tanggal)
-                                            @php
-                                                $data_tanggal = $data_per_produk->where('tanggal', $tanggal)->first();
-                                                $out = $data_tanggal ? $data_tanggal->out : 0;
-                                                $total_out += $out;
-                                                $total_produk += $out;
-                                            @endphp
-                                            <td>{{ $out != 0 ? $out : '' }}</td>
-                                        @endforeach
-                                        @php
-                                            $produk_sss = $total_produk + $start_sss;
-                                            if ($start_sss == 0) {
-                                                $produk_sss = $total_produk;
-                                            }
-                                            $grandtotalproduk += $produk_sss;
-                                        @endphp
-                                        <td>{{ $produk_sss != 0 ? $produk_sss : '' }}</td>
-                                        @foreach ($sumnotapemasaran as $item)
-                                            @if ($item->nama_barang == $nama_produk)
-                                                <td>{{ $item->jumlah_nota_cash ?? '' }}</td>
-                                                <td>{{ $item->jumlah_nota_non_cash ?? '' }}</td>
-                                                @php
-                                                    $total_cash += $item->jumlah_nota_cash;
-                                                    $total_non_cash += $item->jumlah_nota_non_cash;
-                                                @endphp
-                                                {{-- @else
-                                                <td>0</td>
-                                                <td>0</td> --}}
-                                            @endif
-                                        @endforeach
-                                        @foreach ($sssend as $end)
-                                            @if ($end->nama_produk == $nama_produk)
-                                                <td>{{ $end->sss }}</td>
-                                                @php
-                                                    $end_sss = $end->sss;
-                                                    $grandtotalsssend += $end_sss;
-                                                @endphp
-                                            @endif
-                                        @endforeach
+                                        <td colspan="6" class="text-center">Belum ada nota cash dalam periode ini.</td>
                                     </tr>
-                                @endforeach
-                                <tr>
-                                    <td style="text-align: center;"><b>Total</b></td>
-                                    <td>{{ $grandtotalsssstart }}</td>
-                                    @foreach ($uniqueDates as $tanggal)
-                                        @php
-                                            $total_out_column = $groupedData->sum(function ($data_per_produk) use (
-                                                $tanggal,
-                                            ) {
-                                                $data_tanggal = $data_per_produk->where('tanggal', $tanggal)->first();
-                                                return $data_tanggal ? $data_tanggal->out : 0;
-                                            });
-                                        @endphp
-                                        <td>{{ $total_out_column }}</td>
+                                @else
+                                @php
+                                    $totalNotaCash = 0;
+                                @endphp
+                                    @foreach($notaCash as $nota)
+                                        <tr>
+                                            <td rowspan="{{ count($nota->item_nota) }}">{{ $loop->iteration }}</td>
+                                            <td rowspan="{{ count($nota->item_nota) }}">{{ $nota->nama_toko }}</td>
+                                            <td rowspan="{{ count($nota->item_nota) }}" class="text-center">{{ \Carbon\Carbon::parse($nota->tanggal)->format('d/m/Y') }}</td>
+                                            @foreach ($nota->item_nota as $index => $item)
+                                            @if ($index > 0)
+                                            <tr>
+                                            @endif
+                                                @php
+                                                    $totalNotaCash += $item->qty
+                                                @endphp
+                                                <td class="text-end">{{ number_format($item->qty, 0, ',', '.') }}</td>
+                                                <td>{{ $item->nama_produk }}</td>
+                                                @if ($index == 0)
+                                                    <td rowspan="{{ count($nota->item_nota) }}">{{ $nota->oleh }}</td>
+                                                @endif
+                                            </tr>
+                                            @endforeach
+                                        </tr>
                                     @endforeach
-                                    <td>{{ $grandtotalproduk ?? '' }}</td>
-                                    <td>{{ $total_cash }}</td>
-                                    <td>{{ $total_non_cash }}</td>
-                                    <td>{{ $grandtotalsssend }}</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalNotaCash, 0, ',', '.') }}</strong></td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="nota_cash" role="tabpanel" aria-labelledby="nota_cash-tab">
-                    <div class="mt-3">
-                        <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Toko</th>
-                                    <th>Tanggal Nota</th>
-                                    <th>QTY</th>
-                                    <th>Nama Barang</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $totalQtycash = 0; // Inisialisasi total qty di luar loop
-                                @endphp
-                                @foreach ($notacash as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->nama_toko }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}</td>
-                                        <td>{{ $item->qty }}</td>
-                                        <td>{{ $item->nama_barang }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#editnotacash-{{ $item->id }}">Edit</button>
-                                            <a href="/deletenota/{{ $item->id }}"
-                                                class="btn btn-danger btn-sm">Hapus</a>
-                                        </td>
-                                    </tr>
-                                    @php
-                                        $totalQtycash += $item->qty; // Menambahkan qty pada setiap iterasi ke totalQty
-                                    @endphp
-                                    <div class="modal fade" id="editnotacash-{{ $item->id }}"
-                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="staticBackdropLabel">Edit Nota Cash</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="editNota/{{ $item->id }}" method="POST">
-                                                        @csrf
-                                                        <div>
-                                                            <label for="jenis_nota">Jenis Nota</label>
-                                                            <select name="jenis_nota" id="jenis_nota" class="form-select"
-                                                                disabled>
-                                                                <option>{{ $item->jenis_nota }}</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="tanggal_Nota" class="form-label">Tanggal
-                                                                Nota:</label>
-                                                            <input type="date" name="tanggal_Nota" id="tanggal_Nota"
-                                                                class="form-control  @error('tanggal_Nota') is-invalid @enderror"
-                                                                value="{{ $item->tanggal }}" disabled>
-                                                            @error('tanggal_Nota')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="nama_toko" class="form-label">Nama Toko:</label>
-                                                            <input type="text" name="nama_toko" id="nama_toko"
-                                                                class="form-control  @error('nama_toko') is-invalid @enderror"
-                                                                value="{{ $item->nama_toko }}" disabled>
-                                                            @error('nama_toko')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="QTY" class="form-label">QTY:</label>
-                                                            <input type="number" name="QTY" id="QTY"
-                                                                class="form-control  @error('QTY') is-invalid @enderror"
-                                                                value="{{ $item->qty }}" required>
-                                                            @error('QTY')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div>
-                                                            <label for="nama_produk_nota" class="form-label">Nama Barang
-                                                                :</label>
-                                                            <select name="nama_produk_nota" id="nama_produk_nota"
-                                                                class="form-select" required>
-                                                                <option value="{{ $item->nama_barang }}" selected>
-                                                                    {{ $item->nama_barang }}</option>
-                                                                @foreach ($produks as $itemproduk)
-                                                                    @if ($itemproduk->nama_produk != $item->nama_barang)
-                                                                        <option value="{{ $itemproduk->nama_produk }}">
-                                                                            {{ $itemproduk->nama_produk }}</option>
-                                                                    @endif
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="modal-footer mt-4">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Edit</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                @endforeach
-                                <tr>
-                                    <td colspan="3"><b>Total</b></td>
-                                    {{-- <td></td> --}}
-                                    <td>{{ $totalQtycash }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="tab-pane fade" id="non-cash" role="tabpanel" aria-labelledby="non-cash-tab">
+                    <div>
+                        <h4>Nota Non Cash</h4>
+                        <p>Periode {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</p>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="nota_noncash" role="tabpanel" aria-labelledby="nota_noncash-tab">
-                    <div class="mt-3">
-                        <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                            <thead>
+                    <div>
+                        <table class="table table-bordered table-striped table-sm border border-dark align-middle mt-3">
+                            <thead class="text-center align-middle">
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Toko</th>
-                                    <th>Tanggal Nota</th>
-                                    <th>QTY</th>
-                                    <th>Nama Barang</th>
-                                    <th>Aksi</th>
+                                    <th style="width: 3%;">No</th>
+                                    <th style="width: 40%;">Nama Toko</th>
+                                    <th style="width: 10%;">Tanggal</th>
+                                    <th style="width: 5%;">Jumlah</th>
+                                    <th style="width: 25%;">Nama Produk</th>
+                                    <th style="width: 15%;">Oleh</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $totalQtynoncash = 0; // Inisialisasi total qty di luar loop
-                                @endphp
-                                @foreach ($notanoncash as $index => $item)
+                                @if($notaNonCash->isEmpty())
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->nama_toko }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}</td>
-                                        <td>{{ $item->qty }}</td>
-                                        <td>{{ $item->nama_barang }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#editnotanoncash-{{ $item->id }}">Edit</button>
-                                            <a href="deletenota/{{ $item->id }}"
-                                                class="btn btn-danger btn-sm">Hapus</a>
-                                        </td>
+                                        <td colspan="6" class="text-center">Belum ada nota Non cash dalam periode ini.</td>
                                     </tr>
-                                    @php
-                                        $totalQtynoncash += $item->qty;
-                                    @endphp
-                                    <div class="modal fade" id="editnotanoncash-{{ $item->id }}"
-                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="staticBackdropLabel">Edit Nota Cash</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="editNota/{{ $item->id }}" method="POST">
-                                                        @csrf
-                                                        <div>
-                                                            <label for="jenis_nota">Jenis Nota</label>
-                                                            <select name="jenis_nota" id="jenis_nota" class="form-select"
-                                                                disabled>
-                                                                <option>{{ $item->jenis_nota }}</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="tanggal_Nota" class="form-label">Tanggal
-                                                                Nota:</label>
-                                                            <input type="date" name="tanggal_Nota" id="tanggal_Nota"
-                                                                class="form-control  @error('tanggal_Nota') is-invalid @enderror"
-                                                                value="{{ $item->tanggal }}" disabled>
-                                                            @error('tanggal_Nota')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="nama_toko" class="form-label">Nama Toko:</label>
-                                                            <input type="text" name="nama_toko" id="nama_toko"
-                                                                class="form-control  @error('nama_toko') is-invalid @enderror"
-                                                                value="{{ $item->nama_toko }}" disabled>
-                                                            @error('nama_toko')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <label for="QTY" class="form-label">QTY:</label>
-                                                            <input type="number" name="QTY" id="QTY"
-                                                                class="form-control  @error('QTY') is-invalid @enderror"
-                                                                value="{{ $item->qty }}" required>
-                                                            @error('QTY')
-                                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                            @enderror
-                                                        </div>
-                                                        <div>
-                                                            <label for="nama_produk_nota" class="form-label">Nama Barang
-                                                                :</label>
-                                                            <select name="nama_produk_nota" id="nama_produk_nota"
-                                                                class="form-select" required>
-                                                                <option value="{{ $item->nama_barang }}" selected>
-                                                                    {{ $item->nama_barang }}</option>
-                                                                @foreach ($produks as $itemproduk)
-                                                                    @if ($itemproduk->nama_produk != $item->nama_barang)
-                                                                        <option value="{{ $itemproduk->nama_produk }}">
-                                                                            {{ $itemproduk->nama_produk }}</option>
-                                                                    @endif
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="modal-footer mt-4">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Edit</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                @endforeach
-                                <tr>
-                                    <td colspan="3"><b>Total</b></td>
-                                    {{-- <td></td> --}}
-                                    <td>{{ $totalQtynoncash }}</td>
-                                </tr>
+                                @else
+                                @php
+                                    $totalNotaNonCash = 0;
+                                @endphp
+                                    @foreach($notaNonCash as $notanc)
+                                        <tr>
+                                            <td rowspan="{{ count($notanc->item_nota) }}">{{ $loop->iteration }}</td>
+                                            <td rowspan="{{ count($notanc->item_nota) }}">{{ $notanc->nama_toko }}</td>
+                                            <td rowspan="{{ count($notanc->item_nota) }}" class="text-center">{{ \Carbon\Carbon::parse($notanc->tanggal)->format('d/m/Y') }}</td>
+                                            @foreach ($notanc->item_nota as $index => $item)
+                                            @if ($index > 0)
+                                            <tr>
+                                            @endif
+                                                @php
+                                                    $totalNotaNonCash += $item->qty
+                                                @endphp
+                                                <td class="text-end">{{ number_format($item->qty, 0, ',', '.') }}</td>
+                                                <td>{{ $item->nama_produk }}</td>
+                                                @if ($index == 0)
+                                                    <td rowspan="{{ count($notanc->item_nota) }}">{{ $notanc->oleh }}</td>
+                                                @endif
+                                            </tr>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Total</strong></td>
+                                        <td class="text-end"><strong>{{ number_format($totalNotaNonCash, 0, ',', '.') }}</strong></td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -485,4 +207,4 @@
             </div>
         </div>
     </div>
-@endsection
+</x-layout-manager>

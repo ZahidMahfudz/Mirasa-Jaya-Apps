@@ -1,6 +1,6 @@
-@extends('owner.layout')
-@section('main_content')
-    <h1>Stok Kardus</h1>
+<x-layout-owner>
+    <x-slot:title>Stok Kardus</x-slot>
+    <x-slot:tabs>Owner-Stok Kardus</x-slot>
 
     <div class="mt-2">
         <div class="card">
@@ -11,7 +11,8 @@
                         <h5>Rincian Stok Kardus</h5>
                     </div>
                     <div class="mt-3">
-                        <form action="filterstokkardus" method="GET">
+                        <form action="filterstokkardus" method="post">
+                            @csrf
                             <div class="row">
                                 <div class="col">
                                     <p>periode</p>
@@ -47,7 +48,7 @@
                         <tr>
                             <th rowspan="2" style="text-align: center; vertical-align: middle;">Nama Kardus</th>
                             @foreach ($uniqueDates as $tanggal)
-                                <th colspan="2" style="text-align: center;">{{ $tanggal }}</th>
+                                <th colspan="2" style="text-align: center; width:10%;">{{ Carbon\Carbon::parse($tanggal)->format('d/m') }}</th>
                             @endforeach
                         </tr>
                         <tr>
@@ -76,8 +77,8 @@
                                         $total_pakai += $pakai;
                                         $total_sisa += $sisa;
                                     @endphp
-                                    <td>{{ $pakai != 0 ? $pakai : '' }}</td>
-                                    <td>{{ $sisa != 0 ? $sisa : '' }}</td>
+                                    <td style="text-align: right;">{{ $pakai != 0 ? $pakai : '' }}</td>
+                                    <td style="text-align: right;">{{ $sisa != 0 ? $sisa : '' }}</td>
                                 @endforeach
                             </tr>
 
@@ -95,8 +96,8 @@
                                         return $data_tanggal ? $data_tanggal->sisa : 0;
                                     });
                                 @endphp
-                                <td><b>{{ $total_pakai_column }}</b></td>
-                                <td><b>{{ $total_sisa_column }}</b></td>
+                                <td style="text-align: right;"><b>{{ $total_pakai_column }}</b></td>
+                                <td style="text-align: right;"><b>{{ $total_sisa_column }}</b></td>
                             @endforeach
                         </tr>
                     </tbody>
@@ -104,4 +105,4 @@
             </div>
         </div>
     </div>
-@endsection
+</x-layout-owner>

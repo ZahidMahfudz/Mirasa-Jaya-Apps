@@ -1,163 +1,164 @@
-<title>Mirasa Jaya - Uang Masuk</title>
-@extends('owner.layout')
-@section('main_content')
-    <h1>Uang Masuk</h1>
+<x-layout-owner>
+    <x-slot:title>Uang Masuk</x-slot>
+    <x-slot:tabs>Owner-Uang Masuk</x-slot>
 
     <div>
-        <div class="card mb-1 w-50">
+        <div class="card">
             <div class="card-header">
-                <h6 class="mb-0">Filter Periode</h6>
-            </div>
-            <div class="card-body">
-                <form action="filter" method="GET">
-                    <div class="row g-3">
-                        <div class="col-md-5">
-                            <label for="startDate" class="form-label">Mulai:</label>
-                            <input type="date" class="form-control" id="startDate" name="startDate" value="{{ $startDate ?? '' }}">
-                        </div>
-                        <div class="col-md-5">
-                            <label for="endDate" class="form-label">Selesai:</label>
-                            <input type="date" class="form-control" id="endDate" name="endDate" value="{{ $endDate ?? '' }}">
-                        </div>
-                        <div class="col-12">
-                            <label for="submit" class="form-label"></label>
-                            <button type="submit" class="btn btn-primary" name="submit" id="submit">Filter</button>
-                        </div>
-                    </div>
-                </form>
-        </div>
-    </div>
-
-    <div>
-        <div class="card mt-3">
-            <div class="card-header">
-                <div  class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5>Rekap Uang Masuk Periode : {{ Carbon\Carbon::parse($startDate ?? '')->format('d F Y') }} - {{ Carbon\Carbon::parse($endDate ?? '')->format('d F Y') }}</h5>
+                        <form action="/user/owner/filteruangmasuk" method="GET">
+                            @csrf
+                            <div class="row">
+                                <div class="col-auto">
+                                    <h4>Periode Uang Masuk :</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="date" class="form-control" id="startDate" name="startDate" value="{{ $startDate ?? '' }}">
+                                </div>
+                                <div class="col-auto">
+                                    <h4>s/d</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="date" class="form-control" id="endDate" name="endDate" value="{{ $endDate ?? '' }}">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary" name="submit" id="submit">Filter</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="mt-2">
-                        <a href="" onclick=" this.href='cetak-uang-masuk-filter/'+ document.getElementById('startDate').value + '/' + document.getElementById('endDate').value " class="btn btn-secondary" target="_blank" >Cetak</a>
+                        <a href="#" onclick=" this.href='/user/owner/cetak-uang-masuk/'+ document.getElementById('startDate').value + '/' + document.getElementById('endDate').value " class="btn btn-secondary" target="_blank" >Cetak</a>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div>
-                    <table class="table table-bordered table-sm border border-dark align-middle">
-                        <tr>
-                            <td><b>total Uang Masuk</b></td>
-                            <td><b>{{ number_format($piutangplusretail) }}</b></td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#nota_piutang" type="button" role="tab" aria-controls="nota_piutang" aria-selected="false">Nota Piutang</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#retail" type="button" role="tab" aria-controls="retail" aria-selected="false">retail</button>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="nota_piutang" role="tabpanel" aria-labelledby="nota_piutang-tab">
-                                <div class="mt-3">
-                                    <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Toko</th>
-                                                <th>Tanggal</th>
-                                                <th>Keterangan</th>
-                                                <th>Tanggal Lunas</th>
-                                                <th>Total Piutang</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($piutang as $index => $piutang)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $piutang->nama_toko }}</td>
-                                                    <td>{{ Carbon\Carbon::parse($piutang->tanggal)->format('d F Y') }}</td>
-                                                    <td>{{ $piutang->keterangan }}</td>
-                                                    <td>
-                                                        @if ($piutang->tanggal_lunas == null)
-                                                            -
-                                                        @else
-                                                            {{ Carbon\Carbon::parse($piutang->tanggal_lunas)->format('d F Y') }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ number_format($piutang->total_piutang) }}</td>
-                                                </tr>
-                                            @endforeach
-                                            <tr>
-                                                <td colspan="4"></td>
-                                                <td><b>Total</b></td>
-                                                <td><b>{{ number_format($jumlahpiutang) }}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="retail" role="tabpanel" aria-labelledby="retail-tab">
-                                <div class="mt-3">
-                                    <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Tanggal</th>
-                                                <th>Nama Produk</th>
-                                                <th>QTY</th>
-                                                <th>Satuan</th>
-                                                <th>Harga Satuan</th>
-                                                <th>Jumlah</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($retail as $index => $retail)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ Carbon\Carbon::parse($retail->tanggal)->format('d F Y') }}</td>
-                                                    <td>{{ $retail->nama_produk }}</td>
-                                                    <td>{{ $retail->qty }}</td>
-                                                    <td>{{ $retail->satuan }}</td>
-                                                    <td>{{ number_format($retail->harga_satuan) }}</td>
-                                                    <td>{{ number_format($retail->jumlah) }}</td>
-                                                </tr>
-                                            @endforeach
-                                            <tr>
-                                                <td colspan="5"></td>
-                                                <td><b>total</b></td>
-                                                <td><b>{{ number_format($jumlahretail) }}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                          </div>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#nota_piutang" type="button" role="tab" aria-controls="nota_piutang" aria-selected="false">Nota Piutang</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#retail" type="button" role="tab" aria-controls="retail" aria-selected="false">Retail</button>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="nota_piutang" role="tabpanel" aria-labelledby="nota_piutang-tab">
+                        <div class="mt-3">
+                            <table class="table table-bordered table-striped table-sm border border-dark align-middle">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th style="width: 2%; vertical-align: middle;">No</th>
+                                        <th style="width: 5%; vertical-align: middle;">Tanggal Nota</th>
+                                        <th style="width: 5%; vertical-align: middle;">Jenis Nota</th>
+                                        <th style="width: 20%; vertical-align: middle;">Nama Toko</th>
+                                        <th style="width: 25%; vertical-align: middle;">Keterangan</th>
+                                        <th style="width: 5%; vertical-align: middle;">Tanggal Lunas</th>
+                                        <th style="width: 5%; vertical-align: middle;">Total Piutang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totaluangmasuknota = 0;
+                                    @endphp
+                                    @foreach ($piutang as $index => $piutang)
+                                        <tr>
+                                            <td style="text-align: center;">{{ $index + 1 }}</td>
+                                            <td style="text-align: center;">{{ Carbon\Carbon::parse($piutang->tanggal)->format('d/m/Y') }}</td>
+                                            <td style="text-align: center;">
+                                                @if($piutang->jenis_nota == 'nota_cash')
+                                                    Cash
+                                                @elseif($piutang->jenis_nota == 'nota_noncash')
+                                                    Non Cash
+                                                @endif
+                                            </td>
+                                            <td>{{ $piutang->nama_toko }}</td>
+                                            <td>{{ $piutang->keterangan }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($piutang->tanggal_lunas == null)
+                                                    -
+                                                @else
+                                                    {{ Carbon\Carbon::parse($piutang->tanggal_lunas)->format('d/m/Y') }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: right;">{{ number_format($piutang->total_nota) }}</td>
+                                            @php
+                                                $totaluangmasuknota += $piutang->total_nota;
+                                            @endphp
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="6" style="text-align: right;"><b>Total Uang Masuk dari Nota/Piutang Periode {{ Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} - {{ Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }} </b></td>
+                                        <td style="text-align: right;">Rp.{{ number_format($totaluangmasuknota) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                    <div class="tab-pane fade" id="retail" role="tabpanel" aria-labelledby="retail-tab">
+                        <div class="mt-3">
+                            <table class="table table-bordered table-striped table-sm border border-dark align-middle mt-3">
+                                <thead class="text-center align-middle">
+                                    <tr>
+                                        <th style="width: 2%;" rowspan="2">No</th>
+                                        <th style="width: 5%;" rowspan="2">Tanggal</th>
+                                        <th style="width: 15%;" rowspan="2">Nama Pelanggan</th>
+                                        <th colspan="4">Item Nota</th>
+                                        <th style="width: 7%;" rowspan="2">Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 15%;">Nama Produk</th>
+                                        <th style="width: 2%;">QTY</th>
+                                        <th style="width: 7%;">Harga Satuan</th>
+                                        <th style="width: 7%;">Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totaluangmasukretail = 0;
+                                    @endphp
+                                    @foreach ($retail as $item)
+                                        <tr>
+                                            <td rowspan="{{ count($item->item_nota) }}" class="text-center">{{ $loop->iteration }}</td>
+                                            <td rowspan="{{ count($item->item_nota) }}">{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
+                                            <td rowspan="{{ count($item->item_nota) }}">{{ $item->nama_toko }}</td>
+                                            @foreach ($item->item_nota as $index => $product)
+                                                @if ($index > 0)
+                                                    <tr>
+                                                @endif
+                                                <td>{{ $product->nama_produk }}</td>
+                                                <td class="text-end">{{ $product->qty }}</td>
+                                                <td class="text-end">{{ number_format($product->harga_satuan, 0, ',', '.') }}</td>
+                                                <td class="text-end">{{ number_format($product->qty * $product->harga_satuan, 0, ',', '.') }}</td>
+                                                    @if ($index == 0)
+                                                        <td rowspan="{{ count($item->item_nota) }}" class="text-end">{{ number_format($item->total_nota, 0, ',', '.') }}</td>
+                                                    @endif
+                                                    @php
+                                                        $totaluangmasukretail += $product->qty * $product->harga_satuan;
+                                                    @endphp
+                                                </tr>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="7" style="text-align: right;"><b>Total Uang Masuk dari retail s/d {{ Carbon\Carbon::parse($update)->translatedFormat('d F Y') }}: </b></td>
+                                        <td style="text-align: right;">Rp.{{ number_format($totaluangmasukretail) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="mt-3">
+                      <table class="table table-bordered table-striped table-sm border border-dark align-middle text-end">
+                        <tr>
+                            <th>Total Uang Masuk Periode {{ Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} - {{ Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</th>
+                            <th>Rp.{{ number_format($totaluangmasuknota + $totaluangmasukretail) }}</th>
+                        </tr>
+                      </table>
+                  </div>
             </div>
         </div>
+
     </div>
-
-
-
-    <div class="card mt-3 mb-0">
-        <div class="card-header">
-            <p>Total Uang Masuk</p>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped table-sm border border-dark align-middle">
-                <tbody>
-                    <tr>
-                        @foreach ($totaluangmasuk as $totaluangmasuk)
-                            <th>Total Uang Masuk per {{ Carbon\Carbon::parse($totaluangmasuk->update)->format('d F Y') }} : </th>
-                            <th>{{ number_format($totaluangmasuk->total_uang_masuk) }}</th>
-                        @endforeach
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-@endsection
+</x-layout-owner>

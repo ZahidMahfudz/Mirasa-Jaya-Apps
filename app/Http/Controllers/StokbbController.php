@@ -135,29 +135,43 @@ class StokbbController extends Controller
 
         $stok_kardus_hari_ini = stok_kardus::where('tanggal', $tanggalHariIni)->first();
 
-        if ($stok_kardus_hari_ini) {
-            return redirect()->back()->with('error', 'Resume untuk hari ini sudah ada.');
-        }
+        $stokkemaren = stok_kardus::where('tanggal', '<', $tanggalHariIni)->orderBy('tanggal', 'desc')->first();
 
         $kardus = bahanbaku::where('jenis', 'kardus')->get();
 
-        foreach ($kardus as $item) {
-            $sisaKemarin = stok_kardus::where('nama_kardus', $item->nama_bahan)
-                ->where('tanggal', '<', $tanggalHariIni)
-                ->orderBy('tanggal', 'desc')
-                ->first();
-
-            $sisa = $sisaKemarin ? $sisaKemarin->sisa : 0;
-
-            stok_kardus::create([
-                'tanggal' => $tanggalHariIni,
-                'nama_kardus' => $item->nama_bahan,
-                'pakai' => 0,
-                'sisa' => $sisa
-            ]);
+        if ($stok_kardus_hari_ini) {
+            return redirect()->back()->with('error', 'Stok kardus untuk hari ini sudah ada.');
         }
+        else if(!$stokkemaren){
+            foreach($kardus as $kardus){
+                stok_kardus::create([
+                    'tanggal' => $tanggalHariIni,
+                    'nama_kardus' => $kardus->nama_bahan,
+                    'pakai' => 0,
+                    'sisa' => 0
+                ]);
+            }
 
-        return redirect('/user/manager/kardus')->with('success', 'Data berhasil diperbarui');
+            return redirect()->back()->with('success', 'kardus berhasil digenerate');
+        }
+        else{
+            foreach ($kardus as $item) {
+                $sisaKemarin = stok_kardus::where('nama_kardus', $item->nama_bahan)
+                    ->where('tanggal', '<', $tanggalHariIni)
+                    ->orderBy('tanggal', 'desc')
+                    ->first();
+    
+                $sisa = $sisaKemarin ? $sisaKemarin->sisa : 0;
+    
+                stok_kardus::create([
+                    'tanggal' => $tanggalHariIni,
+                    'nama_kardus' => $item->nama_bahan,
+                    'pakai' => 0,
+                    'sisa' => $sisa
+                ]);
+            }
+            return redirect('/user/manager/kardus')->with('success', 'Data berhasil diperbarui');
+        }
     }
 
     public function editStokKardus(Request $request, $id)
@@ -176,13 +190,16 @@ class StokbbController extends Controller
             $sisa_sebelumnya = $stok_kardus_sebelumnya->sisa;
         } else {
             // Jika tidak ada data untuk tanggal sebelumnya, asumsikan sisa sebelumnya adalah 0
-            $sisa_sebelumnya = 0;
+            // $sisa_sebelumnya = 0;
+            return redirect()->back()->with('error', 'Data hari kemarin tidak ditemukan');
         }
 
-        if ($stok_kardus->sisa === null) {
-            $sisa = $request->input('pakai');
-        } elseif ($stok_kardus->sisa == 0) {
-            $sisa = $request->input('pakai');
+        if ($stok_kardus_sebelumnya->sisa === null) {
+            // $sisa = $request->input('pakai');
+            return redirect()->back()->with('error', 'silahkan tambahkan kardus '.$stok_kardus->nama_kardus.' terlebih dahulu');
+        } elseif ($stok_kardus_sebelumnya->sisa == 0) {
+            // $sisa = $request->input('pakai');
+            return redirect()->back()->with('error', 'silahkan tambahkan kardus '.$stok_kardus->nama_kardus.' terlebih dahulu');
         } else {
             $sisa = $sisa_sebelumnya - $request->input('pakai');
         }
@@ -233,13 +250,17 @@ class StokbbController extends Controller
         $groupedData = $data_stok_kardus->groupBy('nama_kardus');
         $uniqueDates = stok_kardus::whereBetween('tanggal', [$startDate, $endDate])->distinct('tanggal')->pluck('tanggal')->toArray();
 
-        return view('owner.cetakstokkardus', compact('groupedData', 'uniqueDates', 'startDate', 'endDate'));
+        return view('cetak.cetakstokkardus', compact('groupedData', 'uniqueDates', 'startDate', 'endDate'));
     }
 
     public function filterstokkardus(Request $request)
     {
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
+    
+        // if ($endDate->lessThan($startDate)) {
+        //     return redirect()->back()->with('error', 'Tanggal tidak valid');
+        // }
 
         $data_stok_kardus = stok_kardus::whereBetween('tanggal', [$startDate, $endDate])->orderBy('tanggal', 'desc')->get();
         $groupedData = $data_stok_kardus->groupBy('nama_kardus');
@@ -269,7 +290,7 @@ class StokbbController extends Controller
         $resep = resep::with('bahan_resep')->get();
         $bb = bahanbaku::where('jenis', 'bahan baku')->get();
 
-        return view('manager.resepwip', compact('resep', 'bb'));
+        return view('admin.resepwip', compact('resep', 'bb'));
     }
 
     public function resepstore(Request $request)
@@ -405,7 +426,7 @@ class StokbbController extends Controller
         // Ambil semua rekap resep
         $rekapReseps = rekap_resep::where('tanggal', $startDate)->with('resep.bahan_resep')->get();
 
-        return view('owner.cetakstok', compact('startDate', 'bb', 'bp', 'stokbb', 'stokbp', 'rekapReseps'));
+        return view('cetak.cetakstok', compact('startDate', 'bb', 'bp', 'stokbb', 'stokbp', 'rekapReseps'));
     }
 
     public function filterowner(Request $request){
@@ -422,6 +443,5 @@ class StokbbController extends Controller
         $rekapReseps = rekap_resep::where('tanggal', $tanggal)->with('resep.bahan_resep')->get();
 
         return view('owner.stok', compact('tanggal', 'bb', 'bp', 'stokbb', 'stokbp', 'rekapReseps'));
-
     }
 }

@@ -1,10 +1,6 @@
-<head>
-    <title>Mirasa Jaya - Laporan Produksi</title>
-</head>
-
-@extends('owner.layout')
-@section('main_content')
-    <h1>Laporan Produksi</h1>
+<x-layout-owner>
+    <x-slot:title>Laporan Produksi</x-slot>
+    <x-slot:tabs>Owner-Laporan Produksi</x-slot>
 
     <div class="card mt-2">
         <div class="card-header">
@@ -14,7 +10,8 @@
                         <h5>Rincian Laporan Produksi</h5>
                     </div>
                     <div class="mt-3">
-                        <form action="filterlaporanproduksi" method="GET">
+                        <form action="filterlaporanproduksi" method="post">
+                            @csrf
                             <div class="row">
                                 <div class="col">
                                     <p>periode</p>
@@ -49,7 +46,7 @@
                     <tr>
                         <th>Nama Produk</th>
                         @foreach ($uniqueDates as $tanggal)
-                            <th>{{ $tanggal }}</th>
+                            <th>{{ Carbon\Carbon::parse($tanggal)->format('d/m') }}</th>
                         @endforeach
                         <th>jumlah</th>
                         <th>harga/sat</th>
@@ -78,13 +75,13 @@
                                 $total_in += $in;
                                 $total_produk += $in;
                             @endphp
-                            <td>{{ $in != 0 ? $in : '' }}</td>
+                            <td style="text-align: right;">{{ $in != 0 ? $in : '' }}</td>
                             @endforeach
-                            <td>{{ $total_produk }}</td>
+                            <td style="text-align: right;">{{ $total_produk }}</td>
                             <!-- Tampilkan harga satuan untuk produk ini -->
-                            <td>{{ number_format($produk[$nama_produk] ?? 0) }}</td>
+                            <td style="text-align: right;">{{ number_format($produk[$nama_produk] ?? 0) }}</td>
                             <!-- Hitung total berdasarkan total_produk dan harga satuan -->
-                            <td>{{ number_format(($produk[$nama_produk] ?? 0) * $total_produk) }}</td>
+                            <td style="text-align: right;">{{ number_format(($produk[$nama_produk] ?? 0) * $total_produk) }}</td>
                         </tr>
                         @php
                             $grandTotalProduk += $total_produk;
@@ -101,14 +98,14 @@
                                     return $data_tanggal ? $data_tanggal->in : 0;
                                 });
                             @endphp
-                            <td>{{ $total_in_column }}</td>
+                            <td style="text-align: right;"><b>{{ $total_in_column }}</b></td>
                         @endforeach
-                        <td>{{ $grandTotalProduk }}</td>
+                        <td style="text-align: right;"><b>{{ $grandTotalProduk }}</b></td>
                         <td></td>
-                        <td>{{ number_format($grandTotalHargaProduk) }}</td>
+                        <td style="text-align: right;"><b>{{ number_format($grandTotalHargaProduk) }}</b></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-@endsection
+</x-layout-owner>

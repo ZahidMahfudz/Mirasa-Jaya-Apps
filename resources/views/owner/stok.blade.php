@@ -1,20 +1,18 @@
-@extends('owner.layout')
-@section('main_content')
-    <h1>Stok Bahan Baku, Bahan Penolong, dan WIP</h1>
+<x-layout-owner>
+    <x-slot:title>Stok Bahan Baku, Bahan Penolong dan WIP</x-slot>
+    <x-slot:tabs>Owner-Rekapitulasi Stok</x-slot>
 
     <div>
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                    <div class="mt-1">
-                        <h5>Rincian Stok Bahan Baku, Bahan Penolong, Dan WIP</h5>
-                    </div>
                     <div class="mt-3">
-                        <form action="filterstokbb" method="GET">
+                        <form action="filterstokbb" method="post">
+                            @csrf
                             <div class="row">
                                 <div class="col">
-                                    <p>Tanggal :</p>
+                                    <p>Tanggal</p>
                                 </div>
                                 <div class="col">
                                     {{-- <label for="startDate" class="form-label">Mulai:</label> --}}
@@ -102,18 +100,18 @@
                                             <tr>
                                                 <td>{{ $bahanbaku->nama_bahan }}</td>
                                                 <td>{{ $satuanhargasat->satuan }} ({{ $satuanhargasat->banyak_satuan }} {{ $satuanhargasat->jenis_satuan }})</td>
-                                                <td>{{ $gudang }}</td>
-                                                <td>{{ $sisaResep }}</td>
-                                                <td>{{ $totalBahanBaku }}</td>
-                                                <td>{{ $wip }}</td>
-                                                <td>{{ $totalStokBahanBaku }}</td>
-                                                <td>{{ number_format($hargaSatuan) }}</td>
-                                                <td>{{ number_format($totalHarga) }}</td>
+                                                <td style="text-align: right">{{ $gudang }}</td>
+                                                <td style="text-align: right">{{ $sisaResep }}</td>
+                                                <td style="text-align: right">{{ $totalBahanBaku }}</td>
+                                                <td style="text-align: right">{{ $wip }}</td>
+                                                <td style="text-align: right">{{ $totalStokBahanBaku }}</td>
+                                                <td style="text-align: right">{{ number_format($hargaSatuan) }}</td>
+                                                <td style="text-align: right">{{ number_format($totalHarga) }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>
                                             <td colspan="8" style="text-align: right;"><strong>Total</strong></td>
-                                            <td colspan="2">{{ number_format($sumtotalbahanbaku) }}</td>
+                                            <td colspan="2" style="text-align: right"><b>{{ number_format($sumtotalbahanbaku) }}</b></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -144,14 +142,14 @@
                                                 @php
                                                     $jumlah = $stokbp->firstWhere('nama_bahan', $bahanpenolong->nama_bahan);
                                                 @endphp
-                                                @if ($bahanpenolong  && $jumlah)
-                                                    <td>{{ $jumlah->jumlah }}</td>
-                                                    <td>{{ number_format($bahanpenolong->harga_persatuan) }}</td>
+                                                @if ($bahanpenolong && $jumlah)
+                                                    <td style="text-align: right">{{ $jumlah->jumlah }}</td>
+                                                    <td style="text-align: right">{{ number_format($bahanpenolong->harga_persatuan) }}</td>
                                                     @php
                                                         $totalbp = $jumlah->jumlah * $bahanpenolong->harga_persatuan;
                                                         $sumtotalbahanpenolong += $totalbp
                                                     @endphp
-                                                    <td>{{ number_format($totalbp) }}</td>
+                                                    <td style="text-align: right">{{ number_format($totalbp) }}</td>
                                                 @else
                                                     <td colspan="5">Data bahan Penolong Tidak Ditemukan</td>
                                                 @endif
@@ -159,7 +157,7 @@
                                         @endforeach
                                         <tr>
                                             <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
-                                            <td colspan="2">{{ number_format($sumtotalbahanpenolong) }}</td>
+                                            <td colspan="2" style="text-align: right;"><b>{{ number_format($sumtotalbahanpenolong) }}</b></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -190,12 +188,12 @@
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $loop->parent->iteration }}</td>
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->resep->nama_resep }}</td>
                                                         <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->resep->lini_produksi }}</td>
-                                                        <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}">{{ $rekapResep->jumlah_resep }}</td>
+                                                        <td rowspan="{{ $rekapResep->resep->bahan_resep->count() }}" style="text-align: center;">{{ $rekapResep->jumlah_resep }}</td>
                                                     @endif
                                                     <td>{{ $bahanResep->nama_bahan }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_gr * $rekapResep->jumlah_resep }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_kg * $rekapResep->jumlah_resep }}</td>
-                                                    <td>{{ $bahanResep->jumlah_bahan_zak * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_gr * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_kg * $rekapResep->jumlah_resep }}</td>
+                                                    <td style="text-align: right;">{{ $bahanResep->jumlah_bahan_zak * $rekapResep->jumlah_resep }}</td>
                                                 </tr>
                                             @endforeach
                                         @endforeach
@@ -207,8 +205,15 @@
                 </div>
             </div>
             <div class="card-footer">
-                <strong>Total Stok Bahan Baku dan Kardus : {{ number_format($sumtotalbahanbaku + $sumtotalbahanpenolong) }}</strong>
+                <strong>Total Stok Bahan Baku dan Kardus : Rp.{{ number_format($sumtotalbahanbaku + $sumtotalbahanpenolong) }}</strong>
             </div>
         </div>
     </div>
-@endsection
+</x-layout-owner>
+
+{{-- @extends('owner.layout')
+@section('main_content')
+    <h1>Stok Bahan Baku, Bahan Penolong, dan WIP</h1>
+
+    
+@endsection --}}
