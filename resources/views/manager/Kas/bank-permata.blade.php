@@ -3,24 +3,24 @@
     <x-slot:tabs>Manager-Kas</x-slot>
 
     <!-- BODY -->
-    <ul class="nav nav-tabs nav-fill" style="margin-bottom: 20px;">
+    <ul class="nav nav-tabs" style="margin-bottom: 20px;">
         <li class="nav-item">
           <a class="nav-link" href="{{ route('kas') }}">
-           <i class="bi bi-wallet-fill"></i> Kas
+            Kas
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link  active" href="{{ route('bank-permata')}}">
-            <i class="bi bi-bank"></i> Kas Bank Permata
+             Kas Bank Permata
         </a>
         </li>
     </ul>
 
     <!-- TOMBOL TAMBAH DATA -->
-    <div class="pb-2 col-md-6 text-end align-self-end">
+    <div class="mb-4">
         <div class="row">
             <div class="col-md-12 ml-auto">
-                <a href="{{ route('store-bank-permata') }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#tambahDataModal">+ Tambah</a>
+                <a href="{{ route('store-bank-permata') }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#tambahDataModal">+ Tambah Mutasi Saldo</a>
                     <!-- Modal Tambah Data -->
                     @include('manager.Kas.create-bank-permata')
             </div>
@@ -60,7 +60,7 @@
                             <td>{{ $data->debit }}</td>
                             <td>{{ $data->kredit }}</td>
                             <td>{{ $data->saldo }}</td>
-                            <td>
+                            <td style="text-align: center; width: 130px;">
                                 <a href="{{ url('Bank-Permata/edit/'.$data->id)}}" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $data->id}}">Edit</a>
                                 <a href="{{ url('Bank-Permata/delete/'.$data->id)}}" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $data->id}}">Delete</a>
                                 <!--- Modal Delete Data -->

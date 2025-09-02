@@ -22,7 +22,9 @@
                         <label for="jumlah" class="form-label">Jumlah</label>
                         <input type="number" class="form-control" id="jumlah" name="jumlah" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Tambah</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Tambah</button>
+                    </div>
                 </form>
             </div>
         </div>
